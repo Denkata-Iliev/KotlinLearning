@@ -13,52 +13,22 @@ class ExpenseRepository {
     private val expenses: MutableList<Expense> = mutableListOf()
 
     fun printExpenses() {
-        data class Row(
-            val id: String,
-            val amount: String,
-            val description: String,
-            val date: String,
-            val category: String
-        )
-
         val rows = expenses.map {
-            Row(
-                id = it.id,
-                amount = "${it.amount}€",
-                description = it.description.ifBlank { "N/A" },
-                date = it.date.format(formatter),
-                category = it.category.label
+            listOf(
+                it.id,
+                "${it.amount}€",
+                it.description.ifBlank { "N/A" },
+                it.date.format(formatter),
+                it.category.label
             )
         }
 
-        val headers = Row("ID", "Amount", "Description", "Date", "Category")
-
-        fun maxWidth(selector: (Row) -> String): Int =
-            maxOf(
-                selector(headers).length,
-                rows.maxOfOrNull { selector(it).length } ?: 0
-            )
-
-        val wId = maxWidth { it.id }
-        val wAmount = maxWidth { it.amount }
-        val wDesc = maxWidth { it.description }
-        val wDate = maxWidth { it.date }
-        val wCat = maxWidth { it.category }
-
-        fun fmt(r: Row): String =
-            "| %-${wId}s | %-${wAmount}s | %-${wDesc}s | %-${wDate}s | %-${wCat}s |".format(
-                r.id, r.amount, r.description, r.date, r.category
-            )
+        val headers = listOf("ID", "Amount", "Description", "Date", "Category")
 
         val sb = StringBuilder()
 
-        sb.appendLine(fmt(headers))
-
-        rows.forEach { sb.appendLine(fmt(it)) }
-
-        val separator = "—".repeat(fmt(headers).trimEnd().length)
-        sb.appendLine(separator)
-        sb.appendLine("Running total: ${expenses.sumOf { it.amount }}€")
+        sb.append(renderTable(headers, rows, true))
+        sb.appendLine("Running total: ${getRunningTotal()}€")
 
         print(sb)
     }
@@ -89,6 +59,29 @@ class ExpenseRepository {
             )
         )
         println("Successfully added expense")
+    }
+
+    fun printCategorySummary() {
+        val groups = expenses.groupBy { it.category }
+
+        val runningTotal = getRunningTotal()
+        val rows = groups.map { (category, expenses) ->
+            val totalExpensesAmount = expenses.sumOf { it.amount }
+            val percent = totalExpensesAmount
+                .divide(runningTotal)
+                .multiply(BigDecimal(100))
+
+            listOf(
+                category.label,
+                totalExpensesAmount.toString(),
+                expenses.size.toString(),
+                percent.toString()
+            )
+        }
+
+        val headers = listOf("Category", "Amount Spent", "Expense Count", "% of Total")
+
+        print(renderTable(headers, rows))
     }
 
     private fun inputAmount(): BigDecimal? {
@@ -125,5 +118,44 @@ class ExpenseRepository {
             sb.appendLine("${index + 1}: ${category.label}")
         }
         print(sb.toString())
+    }
+
+    private fun getRunningTotal() = expenses.sumOf { it.amount }
+
+    private fun renderTable(
+        headers: List<String>,
+        rows: List<List<String>>,
+        includeBottomLine: Boolean = false,
+    ): String {
+
+        val columnWidths = headers.indices.map { col ->
+            maxOf(
+                headers[col].length,
+                rows.maxOfOrNull { it[col].length } ?: 0
+            )
+        }
+
+        fun formatRow(row: List<String>): String =
+            row.mapIndexed { i, cell ->
+                "%-${columnWidths[i]}s".format(cell)
+            }.joinToString(
+                separator = " | ",
+                prefix = "| ",
+                postfix = " |"
+            )
+
+        val sb = StringBuilder()
+
+        sb.appendLine(formatRow(headers))
+
+        rows.forEach {
+            sb.appendLine(formatRow(it))
+        }
+
+        if (includeBottomLine) {
+            sb.appendLine("—".repeat(formatRow(headers).length))
+        }
+
+        return sb.toString()
     }
 }

@@ -35,6 +35,7 @@ fun takeActionAndChooseNew(option: Int?): Int? {
     when (option) {
         1 -> repository.addExpense()
         2 -> repository.printExpenses()
+        3 -> repository.printCategorySummary()
         0 -> exitProcess(0)
         else -> println("Invalid option. Try again.")
     }
