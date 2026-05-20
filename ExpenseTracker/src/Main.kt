@@ -1,5 +1,4 @@
 import data.ExpenseRepository
-import kotlin.system.exitProcess
 
 private val repository: ExpenseRepository = ExpenseRepository()
 fun main() {
