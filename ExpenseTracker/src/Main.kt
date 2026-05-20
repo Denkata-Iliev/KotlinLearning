@@ -3,15 +3,23 @@ import kotlin.system.exitProcess
 
 private val repository: ExpenseRepository = ExpenseRepository()
 fun main() {
-    printMainMenu()
-    var option = readln().toIntOrNull()
+    while (true) {
+        printMainMenu()
 
-    while (option != null) {
-        option = takeActionAndChooseNew(option)
+        when (readln().toIntOrNull()) {
+            1 -> repository.addExpense()
+            2 -> repository.printExpenses()
+            3 -> repository.printCategorySummary()
+            0, null -> break
+            else -> println("Invalid option. Try again.")
+        }
+
+        println("Press Enter to continue...")
+        readln()
     }
 }
 
-fun printMainMenu() {
+private fun printMainMenu() {
     println(
         """
         ══════════════════════════════════
@@ -29,19 +37,4 @@ fun printMainMenu() {
         Choose an option:
     """.trimIndent()
     )
-}
-
-fun takeActionAndChooseNew(option: Int?): Int? {
-    when (option) {
-        1 -> repository.addExpense()
-        2 -> repository.printExpenses()
-        3 -> repository.printCategorySummary()
-        0 -> exitProcess(0)
-        else -> println("Invalid option. Try again.")
-    }
-
-    println("Press Enter key to continue...")
-    readln()
-    printMainMenu()
-    return readln().toIntOrNull()
 }
