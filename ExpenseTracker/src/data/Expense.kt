@@ -5,9 +5,9 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class Expense(
-    private val id: String = UUID.randomUUID().toString(),
-    private val amount: BigDecimal,
-    private val description: String,
-    private val date: LocalDate = LocalDate.now(),
-    private val category: Category
+    val id: String = UUID.randomUUID().toString(),
+    val amount: BigDecimal,
+    val description: String,
+    val date: LocalDate = LocalDate.now(),
+    val category: Category
 )
