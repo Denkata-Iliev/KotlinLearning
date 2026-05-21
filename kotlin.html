@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotlin Learning Projects</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #1f2940;
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #334155;
+            --code-bg: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-light);
+            border-bottom-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sections */
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .section h2 {
+            color: var(--accent-light);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        .section h3:first-child {
+            margin-top: 0;
+        }
+
+        /* Project Header */
+        .project-header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--accent);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .project-header h2 {
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-header .difficulty {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Lists */
+        ul, ol {
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        li strong {
+            color: var(--text-primary);
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .feature-card.mvp {
+            border-left-color: var(--success);
+        }
+
+        .feature-card.extended {
+            border-left-color: var(--warning);
+        }
+
+        .feature-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        :not(pre) > code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent-light);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c792ea; }
+        .type { color: #ffcb6b; }
+        .string { color: #c3e88d; }
+        .function { color: #82aaff; }
+        .comment { color: #546e7a; }
+        .number { color: #f78c6c; }
+        .annotation { color: #ff5370; }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .concept-card h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .concept-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card code {
+            font-size: 0.85rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resource-list li {
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .resource-list .icon {
+            font-size: 1.25rem;
+        }
+
+        .resource-list .meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Guidance Steps */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 3rem;
+            padding-bottom: 1.5rem;
+            border-left: 2px solid var(--border);
+            margin-left: 1rem;
+        }
+
+        .step:last-child {
+            border-left: 2px solid transparent;
+            padding-bottom: 0;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: -0.9rem;
+            top: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .step h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Tips */
+        .tip {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip::before {
+            content: "💡 ";
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning);
+        }
+
+        .warning::before {
+            content: "⚠️ ";
+        }
+
+        /* Menu Example */
+        .menu-example {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            color: var(--success);
+        }
+
+        .menu-example .prompt {
+            color: var(--accent-light);
+        }
+
+        .menu-example .output {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .project-header h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Kotlin Learning Projects</h1>
+            <p>Three progressive projects to help you think in Kotlin, not just translate from Java</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab(0)">📊 #1 Expense Tracker</button>
+            <button class="tab-btn" onclick="showTab(1)">📝 #2 Note System</button>
+            <button class="tab-btn" onclick="showTab(2)">🧠 #3 Quiz Engine</button>
+        </div>
+
+        <!-- PROJECT 1: EXPENSE TRACKER -->
+        <div class="tab-content active">
+            <div class="section project-header">
+                <span class="difficulty">Beginner → Intermediate</span>
+                <h2>📊 Personal Expense Tracker</h2>
+                <p>A menu-driven CLI application to log, categorize, and analyze personal expenses. Perfect for learning Kotlin basics idiomatically.</p>
+            </div>
+
+            <div class="section">
+                <h2>🎯 What You'll Build</h2>
+                <div class="menu-example">
+                    <div class="output">══════════════════════════════════</div>
+                    <div class="output">      💰 EXPENSE TRACKER</div>
+                    <div class="output">══════════════════════════════════</div>
+                    <div class="output">  1) Add expense</div>
+                    <div class="output">  2) List all expenses</div>
+                    <div class="output">  3) Summary by category</div>
+                    <div class="output">  4) Filter by date range</div>
+                    <div class="output">  5) Search expenses</div>
+                    <div class="output">  6) Delete expense</div>
+                    <div class="output">  7) Export to CSV</div>
+                    <div class="output">  0) Exit</div>
+                    <div class="output">══════════════════════════════════</div>
+                    <span class="prompt">Choose an option: </span><span>1</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Features Breakdown</h2>
+                
+                <h3>MVP (Build This First)</h3>
+                <div class="feature-grid">
+                    <div class="feature-card mvp">
+                        <h4>Add Expense</h4>
+                        <p>Amount, description, category (from predefined list), date (defaults to today)</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>List Expenses</h4>
+                        <p>Display all expenses in a formatted table with running total</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>Category Summary</h4>
+                        <p>Group expenses by category, show totals and percentages</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>Data Persistence</h4>
+                        <p>Save/load expenses to a simple text or JSON file</p>
+                    </div>
+                </div>
+
+                <h3>Extended Features (After MVP)</h3>
+                <div class="feature-grid">
+                    <div class="feature-card extended">
+                        <h4>Date Range Filter</h4>
+                        <p>Filter expenses between two dates, this week, this month, etc.</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Search</h4>
+                        <p>Search by description (case-insensitive, partial match)</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Statistics</h4>
+                        <p>Average daily spend, highest expense, monthly comparison</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>CSV Export</h4>
+                        <p>Export expenses to CSV format for spreadsheet use</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔑 Key Kotlin Concepts</h2>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>📦 data class</h4>
+                        <p>Use instead of writing POJOs. You get <code>equals()</code>, <code>hashCode()</code>, <code>toString()</code>, <code>copy()</code> for free.</p>
+<pre><code><span class="keyword">data class</span> <span class="type">Expense</span>(
+    <span class="keyword">val</span> id: <span class="type">Int</span>,
+    <span class="keyword">val</span> amount: <span class="type">Double</span>,
+    <span class="keyword">val</span> description: <span class="type">String</span>,
+    <span class="keyword">val</span> category: <span class="type">Category</span>,
+    <span class="keyword">val</span> date: <span class="type">LocalDate</span> = <span class="type">LocalDate</span>.<span class="function">now</span>()
+)</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🏷️ enum class with properties</h4>
+                        <p>Enums in Kotlin can have properties and methods. Much cleaner than Java enums.</p>
+<pre><code><span class="keyword">enum class</span> <span class="type">Category</span>(
+    <span class="keyword">val</span> emoji: <span class="type">String</span>,
+    <span class="keyword">val</span> displayName: <span class="type">String</span>
+) {
+    <span class="function">FOOD</span>(<span class="string">"🍕"</span>, <span class="string">"Food & Dining"</span>),
+    <span class="function">TRANSPORT</span>(<span class="string">"🚗"</span>, <span class="string">"Transport"</span>),
+    <span class="function">UTILITIES</span>(<span class="string">"💡"</span>, <span class="string">"Utilities"</span>),
+    <span class="function">ENTERTAINMENT</span>(<span class="string">"🎬"</span>, <span class="string">"Entertainment"</span>),
+    <span class="function">OTHER</span>(<span class="string">"📦"</span>, <span class="string">"Other"</span>);
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🔀 when expression</h4>
+                        <p>Not just a switch statement — use it as an expression that returns values. Must be exhaustive with enums!</p>
+<pre><code><span class="keyword">fun</span> <span class="function">handleChoice</span>(choice: <span class="type">Int</span>): <span class="type">String</span> = <span class="keyword">when</span> (choice) {
+    <span class="number">1</span> -> <span class="function">addExpense</span>()
+    <span class="number">2</span> -> <span class="function">listExpenses</span>()
+    <span class="number">3</span> -> <span class="function">showSummary</span>()
+    <span class="number">0</span> -> <span class="string">"Goodbye!"</span>
+    <span class="keyword">else</span> -> <span class="string">"Invalid option"</span>
+}
+
+<span class="comment">// Also use for type checking</span>
+<span class="keyword">when</span> {
+    amount <= <span class="number">0</span> -> <span class="function">println</span>(<span class="string">"Invalid amount"</span>)
+    amount > <span class="number">10000</span> -> <span class="function">println</span>(<span class="string">"Large expense!"</span>)
+    <span class="keyword">else</span> -> <span class="function">saveExpense</span>(amount)
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📚 Collection Operations</h4>
+                        <p>Stop writing for-loops! Use <code>map</code>, <code>filter</code>, <code>groupBy</code>, <code>sumOf</code>, etc.</p>
+<pre><code><span class="comment">// Total by category</span>
+expenses
+    .<span class="function">groupBy</span> { it.category }
+    .<span class="function">mapValues</span> { (_, exps) -> exps.<span class="function">sumOf</span> { it.amount } }
+
+<span class="comment">// Filter this month</span>
+expenses.<span class="function">filter</span> { 
+    it.date.month == <span class="type">LocalDate</span>.<span class="function">now</span>().month 
+}
+
+<span class="comment">// Top 5 expenses</span>
+expenses.<span class="function">sortedByDescending</span> { it.amount }.<span class="function">take</span>(<span class="number">5</span>)</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🔧 Extension Functions</h4>
+                        <p>Add methods to existing classes. This is how you avoid Util classes in Kotlin.</p>
+<pre><code><span class="comment">// Instead of: ExpenseUtils.formatMoney(amount)</span>
+<span class="keyword">fun</span> <span class="type">Double</span>.<span class="function">formatAsCurrency</span>(): <span class="type">String</span> =
+    <span class="string">"$</span>${<span class="string">"%.2f"</span>.<span class="function">format</span>(<span class="keyword">this</span>)}<span class="string">"</span>
+
+<span class="comment">// Usage: expense.amount.formatAsCurrency()</span>
+
+<span class="keyword">fun</span> <span class="type">List</span><<span class="type">Expense</span>>.<span class="function">totalAmount</span>(): <span class="type">Double</span> =
+    <span class="function">sumOf</span> { it.amount }
+
+<span class="comment">// Usage: expenses.totalAmount()</span></code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📖 readln() & String Templates</h4>
+                        <p>Use <code>readln()</code> not Scanner. Use string templates instead of concatenation.</p>
+<pre><code><span class="comment">// Reading input</span>
+<span class="function">print</span>(<span class="string">"Enter amount: "</span>)
+<span class="keyword">val</span> amount = <span class="function">readln</span>().<span class="function">toDoubleOrNull</span>() ?: <span class="number">0.0</span>
+
+<span class="comment">// String templates</span>
+<span class="function">println</span>(<span class="string">"Total: </span>${total.<span class="function">formatAsCurrency</span>()}<span class="string">"</span>)
+<span class="function">println</span>(<span class="string">"""
+    |Expense Report
+    |==============
+    |Total: </span>$total<span class="string">
+    |Count: </span>${expenses.size}<span class="string">
+"""</span>.<span class="function">trimMargin</span>())</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛠️ Implementation Guidance</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Set Up Data Models</h4>
+                        <p>Create your <code>Expense</code> data class and <code>Category</code> enum. This is your foundation. Add an <code>id</code> field for deletion/editing later.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Build the Menu Loop</h4>
+                        <p>Create a simple <code>while(true)</code> loop with <code>when</code> for menu selection. Use <code>readln()</code> and handle invalid input with <code>toIntOrNull()</code>.</p>
+                    </div>
+                    <div class="step">
+                        <h4>In-Memory Storage First</h4>
+                        <p>Use a <code>MutableList&lt;Expense&gt;</code> to store expenses. Get all features working before adding file persistence.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Add Collection Operations</h4>
+                        <p>Implement summary and filtering using <code>groupBy</code>, <code>filter</code>, <code>sumOf</code>. Resist the urge to write for-loops!</p>
+                    </div>
+                    <div class="step">
+                        <h4>File Persistence</h4>
+                        <p>Use Kotlin's <code>File.writeText()</code> and <code>readText()</code>. Consider kotlinx.serialization for JSON (or simple CSV for MVP).</p>
+                    </div>
+                    <div class="step">
+                        <h4>Refactor & Extend</h4>
+                        <p>Extract an <code>ExpenseRepository</code> object. Add extension functions. Implement search and export features.</p>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>Don't use Scanner!</strong> Every time you reach for <code>Scanner(System.in)</code>, use <code>readln()</code> instead. For parsing, use <code>toIntOrNull()</code>, <code>toDoubleOrNull()</code> — they return null on failure instead of throwing exceptions.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Code Examples</h2>
+
+                <h3>Main Application Structure</h3>
+<pre><code><span class="keyword">fun</span> <span class="function">main</span>() {
+    <span class="keyword">val</span> tracker = <span class="type">ExpenseTracker</span>()
+    tracker.<span class="function">loadFromFile</span>()
+    
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="function">printMenu</span>()
+        <span class="keyword">when</span> (<span class="function">readln</span>().<span class="function">toIntOrNull</span>()) {
+            <span class="number">1</span> -> tracker.<span class="function">addExpense</span>()
+            <span class="number">2</span> -> tracker.<span class="function">listExpenses</span>()
+            <span class="number">3</span> -> tracker.<span class="function">showCategorySummary</span>()
+            <span class="number">4</span> -> tracker.<span class="function">filterByDateRange</span>()
+            <span class="number">5</span> -> tracker.<span class="function">search</span>()
+            <span class="number">6</span> -> tracker.<span class="function">deleteExpense</span>()
+            <span class="number">7</span> -> tracker.<span class="function">exportToCsv</span>()
+            <span class="number">0</span> -> {
+                tracker.<span class="function">saveToFile</span>()
+                <span class="function">println</span>(<span class="string">"Goodbye! 👋"</span>)
+                <span class="keyword">return</span>
+            }
+            <span class="keyword">else</span> -> <span class="function">println</span>(<span class="string">"❌ Invalid option, try again."</span>)
+        }
+    }
+}</code></pre>
+
+                <h3>Input Handling with Null Safety</h3>
+<pre><code><span class="keyword">fun</span> <span class="function">promptForAmount</span>(): <span class="type">Double</span>? {
+    <span class="function">print</span>(<span class="string">"Enter amount: $"</span>)
+    <span class="keyword">return</span> <span class="function">readln</span>().<span class="function">toDoubleOrNull</span>()?.<span class="function">takeIf</span> { it > <span class="number">0</span> }
+}
+
+<span class="keyword">fun</span> <span class="function">promptForCategory</span>(): <span class="type">Category</span> {
+    <span class="function">println</span>(<span class="string">"Select category:"</span>)
+    <span class="type">Category</span>.<span class="function">entries</span>.<span class="function">forEachIndexed</span> { index, cat ->
+        <span class="function">println</span>(<span class="string">"  </span>${index + <span class="number">1</span>}<span class="string">) </span>${cat.emoji} ${cat.displayName}<span class="string">"</span>)
+    }
+    <span class="function">print</span>(<span class="string">"Choice: "</span>)
+    <span class="keyword">val</span> index = <span class="function">readln</span>().<span class="function">toIntOrNull</span>()?.<span class="function">minus</span>(<span class="number">1</span>) ?: <span class="keyword">return</span> <span class="type">Category</span>.<span class="function">OTHER</span>
+    <span class="keyword">return</span> <span class="type">Category</span>.<span class="function">entries</span>.<span class="function">getOrElse</span>(index) { <span class="type">Category</span>.<span class="function">OTHER</span> }
+}</code></pre>
+
+                <h3>Category Summary with groupBy</h3>
+<pre><code><span class="keyword">fun</span> <span class="function">showCategorySummary</span>(expenses: <span class="type">List</span><<span class="type">Expense</span>>) {
+    <span class="keyword">if</span> (expenses.<span class="function">isEmpty</span>()) {
+        <span class="function">println</span>(<span class="string">"No expenses recorded yet."</span>)
+        <span class="keyword">return</span>
+    }
+    
+    <span class="keyword">val</span> total = expenses.<span class="function">sumOf</span> { it.amount }
+    
+    expenses
+        .<span class="function">groupBy</span> { it.category }
+        .<span class="function">mapValues</span> { (_, exps) -> exps.<span class="function">sumOf</span> { it.amount } }
+        .<span class="function">toList</span>()
+        .<span class="function">sortedByDescending</span> { it.second }
+        .<span class="function">forEach</span> { (category, sum) ->
+            <span class="keyword">val</span> percentage = (sum / total * <span class="number">100</span>).<span class="function">toInt</span>()
+            <span class="keyword">val</span> bar = <span class="string">"█"</span>.<span class="function">repeat</span>(percentage / <span class="number">5</span>)
+            <span class="function">println</span>(<span class="string">"</span>${category.emoji} ${category.displayName.<span class="function">padEnd</span>(<span class="number">15</span>)}<span class="string"> </span>${sum.<span class="function">formatAsCurrency</span>().<span class="function">padStart</span>(<span class="number">10</span>)}<span class="string"> </span>$bar $percentage<span class="string">%"</span>)
+        }
+    
+    <span class="function">println</span>(<span class="string">"─"</span>.<span class="function">repeat</span>(<span class="number">45</span>))
+    <span class="function">println</span>(<span class="string">"Total: </span>${total.<span class="function">formatAsCurrency</span>()}<span class="string">"</span>)
+}</code></pre>
+
+                <h3>Simple File Persistence</h3>
+<pre><code><span class="keyword">import</span> java.io.File
+
+<span class="keyword">object</span> <span class="type">ExpenseRepository</span> {
+    <span class="keyword">private val</span> file = <span class="type">File</span>(<span class="string">"expenses.csv"</span>)
+    
+    <span class="keyword">fun</span> <span class="function">save</span>(expenses: <span class="type">List</span><<span class="type">Expense</span>>) {
+        <span class="keyword">val</span> csv = expenses.<span class="function">joinToString</span>(<span class="string">"\n"</span>) { e ->
+            <span class="string">"</span>${e.id}<span class="string">,</span>${e.amount}<span class="string">,</span>${e.description}<span class="string">,</span>${e.category}<span class="string">,</span>${e.date}<span class="string">"</span>
+        }
+        file.<span class="function">writeText</span>(csv)
+    }
+    
+    <span class="keyword">fun</span> <span class="function">load</span>(): <span class="type">List</span><<span class="type">Expense</span>> {
+        <span class="keyword">if</span> (!file.<span class="function">exists</span>()) <span class="keyword">return</span> <span class="function">emptyList</span>()
+        
+        <span class="keyword">return</span> file.<span class="function">readLines</span>()
+            .<span class="function">filter</span> { it.<span class="function">isNotBlank</span>() }
+            .<span class="function">mapNotNull</span> { line ->
+                <span class="keyword">val</span> parts = line.<span class="function">split</span>(<span class="string">","</span>)
+                <span class="keyword">runCatching</span> {
+                    <span class="type">Expense</span>(
+                        id = parts[<span class="number">0</span>].<span class="function">toInt</span>(),
+                        amount = parts[<span class="number">1</span>].<span class="function">toDouble</span>(),
+                        description = parts[<span class="number">2</span>],
+                        category = <span class="type">Category</span>.<span class="function">valueOf</span>(parts[<span class="number">3</span>]),
+                        date = <span class="type">LocalDate</span>.<span class="function">parse</span>(parts[<span class="number">4</span>])
+                    )
+                }.<span class="function">getOrNull</span>()
+            }
+    }
+}</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📚 Resources</h2>
+                <ul class="resource-list">
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/data-classes.html" target="_blank">Kotlin Data Classes</a>
+                            <div class="meta">Official docs — understand copy(), componentN(), etc.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/collection-operations.html" target="_blank">Collection Operations</a>
+                            <div class="meta">Master map, filter, groupBy, fold, and more</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/null-safety.html" target="_blank">Null Safety</a>
+                            <div class="meta">Learn ?. ?: let takeIf — essential Kotlin</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/extensions.html" target="_blank">Extension Functions</a>
+                            <div class="meta">Add methods to existing classes</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📦</span>
+                        <div>
+                            <a href="https://github.com/Kotlin/kotlinx.serialization" target="_blank">kotlinx.serialization</a>
+                            <div class="meta">If you want JSON instead of CSV (optional)</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PROJECT 2: MARKDOWN NOTE SYSTEM -->
+        <div class="tab-content">
+            <div class="section project-header">
+                <span class="difficulty">Intermediate</span>
+                <h2>📝 Markdown Note System</h2>
+                <p>A command-line note-taking app with commands like <code>add</code>, <code>search</code>, <code>tag</code>. Learn sealed classes, command pattern, and scope functions.</p>
+            </div>
+
+            <div class="section">
+                <h2>🎯 What You'll Build</h2>
+                <div class="menu-example">
+                    <div class="prompt">notes></div> <span>add "Meeting notes" --tag=work --priority=high</span><br>
+                    <div class="output">✓ Note #12 created</div><br>
+                    <div class="prompt">notes></div> <span>list --tag=work</span><br>
+                    <div class="output">#12 [work] Meeting notes (high priority)</div>
+                    <div class="output">#8  [work] Project deadlines</div>
+                    <div class="output">#3  [work] Client feedback</div><br>
+                    <div class="prompt">notes></div> <span>show 12</span><br>
+                    <div class="output">─────────────────────────────</div>
+                    <div class="output"># Meeting notes</div>
+                    <div class="output">Created: 2024-01-15 14:30</div>
+                    <div class="output">Tags: work | Priority: high</div>
+                    <div class="output">─────────────────────────────</div>
+                    <div class="output">(empty - use 'edit 12' to add content)</div><br>
+                    <div class="prompt">notes></div> <span>search "deadline"</span><br>
+                    <div class="output">Found 2 notes matching "deadline"</div><br>
+                    <div class="prompt">notes></div> <span>delete 3 --force</span><br>
+                    <div class="output">✓ Note #3 deleted</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Features Breakdown</h2>
+                
+                <h3>MVP (Build This First)</h3>
+                <div class="feature-grid">
+                    <div class="feature-card mvp">
+                        <h4>add "title" [--tag=x] [--priority=x]</h4>
+                        <p>Create a new note with optional tags and priority level</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>list [--tag=x] [--priority=x]</h4>
+                        <p>Show all notes, optionally filtered by tag or priority</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>show &lt;id&gt;</h4>
+                        <p>Display full note content with metadata</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>delete &lt;id&gt; [--force]</h4>
+                        <p>Delete a note (with confirmation unless --force)</p>
+                    </div>
+                </div>
+
+                <h3>Extended Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card extended">
+                        <h4>edit &lt;id&gt;</h4>
+                        <p>Open note in system editor or inline editing</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>search "query"</h4>
+                        <p>Full-text search across titles and content</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>tag &lt;id&gt; &lt;tags...&gt;</h4>
+                        <p>Add/remove tags from existing notes</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>export [--format=md|json]</h4>
+                        <p>Export notes to various formats</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>archive &lt;id&gt; / unarchive</h4>
+                        <p>Archive notes instead of deleting</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>stats</h4>
+                        <p>Show statistics: note count, tags, etc.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔑 Key Kotlin Concepts</h2>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>🔒 sealed class / sealed interface</h4>
+                        <p><strong>This is the star of this project.</strong> Sealed classes restrict inheritance to a closed set of subclasses. Combined with <code>when</code>, the compiler ensures you handle all cases.</p>
+<pre><code><span class="keyword">sealed class</span> <span class="type">Command</span> {
+    <span class="keyword">data class</span> <span class="type">Add</span>(
+        <span class="keyword">val</span> title: <span class="type">String</span>,
+        <span class="keyword">val</span> tags: <span class="type">List</span><<span class="type">String</span>> = <span class="function">emptyList</span>(),
+        <span class="keyword">val</span> priority: <span class="type">Priority</span> = <span class="type">Priority</span>.<span class="function">NORMAL</span>
+    ) : <span class="type">Command</span>()
+    
+    <span class="keyword">data class</span> <span class="type">List</span>(
+        <span class="keyword">val</span> tagFilter: <span class="type">String</span>? = <span class="keyword">null</span>,
+        <span class="keyword">val</span> priorityFilter: <span class="type">Priority</span>? = <span class="keyword">null</span>
+    ) : <span class="type">Command</span>()
+    
+    <span class="keyword">data class</span> <span class="type">Show</span>(<span class="keyword">val</span> id: <span class="type">Int</span>) : <span class="type">Command</span>()
+    <span class="keyword">data class</span> <span class="type">Delete</span>(<span class="keyword">val</span> id: <span class="type">Int</span>, <span class="keyword">val</span> force: <span class="type">Boolean</span>) : <span class="type">Command</span>()
+    <span class="keyword">data class</span> <span class="type">Search</span>(<span class="keyword">val</span> query: <span class="type">String</span>) : <span class="type">Command</span>()
+    <span class="keyword">data object</span> <span class="type">Help</span> : <span class="type">Command</span>()
+    <span class="keyword">data object</span> <span class="type">Exit</span> : <span class="type">Command</span>()
+    <span class="keyword">data class</span> <span class="type">Unknown</span>(<span class="keyword">val</span> input: <span class="type">String</span>) : <span class="type">Command</span>()
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>⚡ Exhaustive when</h4>
+                        <p>When you use <code>when</code> with a sealed class, the compiler forces you to handle all cases. No more forgotten else branches!</p>
+<pre><code><span class="keyword">fun</span> <span class="function">execute</span>(cmd: <span class="type">Command</span>): <span class="type">String</span> = <span class="keyword">when</span> (cmd) {
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">Add</span> -> <span class="function">addNote</span>(cmd.title, cmd.tags)
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">List</span> -> <span class="function">listNotes</span>(cmd.tagFilter)
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">Show</span> -> <span class="function">showNote</span>(cmd.id)
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">Delete</span> -> <span class="function">deleteNote</span>(cmd.id, cmd.force)
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">Search</span> -> <span class="function">searchNotes</span>(cmd.query)
+    <span class="type">Command</span>.<span class="type">Help</span> -> <span class="function">showHelp</span>()
+    <span class="type">Command</span>.<span class="type">Exit</span> -> <span class="string">"Goodbye!"</span>
+    <span class="keyword">is</span> <span class="type">Command</span>.<span class="type">Unknown</span> -> <span class="string">"Unknown: </span>${cmd.input}<span class="string">"</span>
+    <span class="comment">// No else needed! Compiler checks all cases</span>
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🎯 Scope Functions: let, also, apply, run</h4>
+                        <p>These replace temporary variables and enable fluent APIs. This project will teach you when to use each.</p>
+<pre><code><span class="comment">// let - transform nullable, use 'it'</span>
+tagFilter?.<span class="function">let</span> { tag -> 
+    notes.<span class="function">filter</span> { it.tags.<span class="function">contains</span>(tag) } 
+} ?: notes
+
+<span class="comment">// also - side effects, return original</span>
+<span class="function">createNote</span>(title).<span class="function">also</span> { 
+    <span class="function">println</span>(<span class="string">"Created note #</span>${it.id}<span class="string">"</span>) 
+}
+
+<span class="comment">// apply - configure object, return it</span>
+<span class="type">Note</span>().<span class="function">apply</span> {
+    this.title = title
+    this.tags.<span class="function">addAll</span>(parsedTags)
+    this.createdAt = <span class="type">Instant</span>.<span class="function">now</span>()
+}
+
+<span class="comment">// takeIf / takeUnless</span>
+input.<span class="function">takeIf</span> { it.<span class="function">isNotBlank</span>() } ?: <span class="string">"default"</span></code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🏛️ object declarations</h4>
+                        <p>Singletons done right. No more private constructors and static getInstance().</p>
+<pre><code><span class="keyword">object</span> <span class="type">NoteRepository</span> {
+    <span class="keyword">private val</span> notes = <span class="function">mutableListOf</span><<span class="type">Note</span>>()
+    <span class="keyword">private var</span> nextId = <span class="number">1</span>
+    
+    <span class="keyword">fun</span> <span class="function">add</span>(note: <span class="type">Note</span>): <span class="type">Note</span> {
+        <span class="keyword">val</span> saved = note.<span class="function">copy</span>(id = nextId++)
+        notes.<span class="function">add</span>(saved)
+        <span class="keyword">return</span> saved
+    }
+    
+    <span class="keyword">fun</span> <span class="function">findById</span>(id: <span class="type">Int</span>): <span class="type">Note</span>? = 
+        notes.<span class="function">find</span> { it.id == id }
+    
+    <span class="keyword">fun</span> <span class="function">all</span>(): <span class="type">List</span><<span class="type">Note</span>> = notes.<span class="function">toList</span>()
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📄 File I/O the Kotlin way</h4>
+                        <p>Kotlin has extension functions on <code>java.io.File</code> that make file operations much cleaner.</p>
+<pre><code><span class="keyword">import</span> java.io.File
+
+<span class="comment">// Read entire file</span>
+<span class="keyword">val</span> content = <span class="type">File</span>(<span class="string">"notes.json"</span>).<span class="function">readText</span>()
+
+<span class="comment">// Write to file (creates if needed)</span>
+<span class="type">File</span>(<span class="string">"notes.json"</span>).<span class="function">writeText</span>(json)
+
+<span class="comment">// Process lines lazily (for large files)</span>
+<span class="type">File</span>(<span class="string">"huge.txt"</span>).<span class="function">useLines</span> { lines ->
+    lines.<span class="function">filter</span> { <span class="string">"error"</span> <span class="keyword">in</span> it.<span class="function">lowercase</span>() }
+         .<span class="function">take</span>(<span class="number">10</span>)
+         .<span class="function">toList</span>()
+}
+
+<span class="comment">// Safe resource handling (like try-with-resources)</span>
+<span class="type">File</span>(<span class="string">"data.txt"</span>).<span class="function">bufferedReader</span>().<span class="function">use</span> { reader ->
+    reader.<span class="function">readLine</span>()
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🔨 buildString, buildList</h4>
+                        <p>Builder pattern built into the standard library. Much cleaner than StringBuilder.</p>
+<pre><code><span class="comment">// Instead of StringBuilder</span>
+<span class="keyword">val</span> output = <span class="function">buildString</span> {
+    <span class="function">appendLine</span>(<span class="string">"# </span>${note.title}<span class="string">"</span>)
+    <span class="function">appendLine</span>(<span class="string">"Created: </span>${note.createdAt}<span class="string">"</span>)
+    <span class="keyword">if</span> (note.tags.<span class="function">isNotEmpty</span>()) {
+        <span class="function">append</span>(<span class="string">"Tags: "</span>)
+        <span class="function">appendLine</span>(note.tags.<span class="function">joinToString</span>(<span class="string">", "</span>))
+    }
+    <span class="function">appendLine</span>()
+    <span class="function">append</span>(note.content)
+}
+
+<span class="comment">// Build a list conditionally</span>
+<span class="keyword">val</span> filters = <span class="function">buildList</span> {
+    tagFilter?.<span class="function">let</span> { <span class="function">add</span>(<span class="string">"tag=</span>$it<span class="string">"</span>) }
+    priorityFilter?.<span class="function">let</span> { <span class="function">add</span>(<span class="string">"priority=</span>$it<span class="string">"</span>) }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛠️ Implementation Guidance</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Define Your Sealed Command Hierarchy</h4>
+                        <p>Start with the <code>sealed class Command</code> and all its subclasses. This is your entire command vocabulary. Think about what data each command needs.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Build the Command Parser</h4>
+                        <p>Create a function <code>parseCommand(input: String): Command</code>. Use regex or simple string splitting. Handle <code>--flag</code> and <code>--key=value</code> arguments.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Implement the Executor</h4>
+                        <p>Write <code>execute(command: Command): Result</code> using exhaustive <code>when</code>. Consider returning a <code>sealed class Result</code> (Success/Error) too!</p>
+                    </div>
+                    <div class="step">
+                        <h4>Create NoteRepository object</h4>
+                        <p>Use an <code>object</code> singleton for storage. Start in-memory, then add file persistence with <code>File.writeText()</code>.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Wire Up the REPL Loop</h4>
+                        <p>Create the main loop: prompt → read → parse → execute → print result. Handle errors gracefully.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Add Persistence</h4>
+                        <p>Save notes to JSON using kotlinx.serialization, or a simple line-based format. Load on startup.</p>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>Sealed class mental model:</strong> Think of it as an enum where each variant can hold different data. When you add a new Command type, the compiler will show errors everywhere you need to handle it.
+                </div>
+
+                <div class="tip warning">
+                    <strong>Don't over-engineer the parser.</strong> A simple approach works fine for MVP:
+                    Split by spaces, first word is command, rest are arguments. Handle quotes for titles later.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Code Examples</h2>
+
+                <h3>Command Parser</h3>
+<pre><code><span class="keyword">object</span> <span class="type">CommandParser</span> {
+    <span class="keyword">private val</span> addPattern = <span class="type">Regex</span>(<span class="string">"""add\s+"([^"]+)"(.*)"""</span>)
+    <span class="keyword">private val</span> flagPattern = <span class="type">Regex</span>(<span class="string">"""--(\w+)(?:=(\S+))?"""</span>)
+    
+    <span class="keyword">fun</span> <span class="function">parse</span>(input: <span class="type">String</span>): <span class="type">Command</span> {
+        <span class="keyword">val</span> trimmed = input.<span class="function">trim</span>()
+        
+        <span class="keyword">return when</span> {
+            trimmed == <span class="string">"exit"</span> || trimmed == <span class="string">"quit"</span> -> <span class="type">Command</span>.<span class="type">Exit</span>
+            trimmed == <span class="string">"help"</span> -> <span class="type">Command</span>.<span class="type">Help</span>
+            trimmed.<span class="function">startsWith</span>(<span class="string">"add "</span>) -> <span class="function">parseAdd</span>(trimmed)
+            trimmed.<span class="function">startsWith</span>(<span class="string">"list"</span>) -> <span class="function">parseList</span>(trimmed)
+            trimmed.<span class="function">startsWith</span>(<span class="string">"show "</span>) -> <span class="function">parseShow</span>(trimmed)
+            trimmed.<span class="function">startsWith</span>(<span class="string">"delete "</span>) -> <span class="function">parseDelete</span>(trimmed)
+            trimmed.<span class="function">startsWith</span>(<span class="string">"search "</span>) -> <span class="function">parseSearch</span>(trimmed)
+            <span class="keyword">else</span> -> <span class="type">Command</span>.<span class="type">Unknown</span>(trimmed)
+        }
+    }
+    
+    <span class="keyword">private fun</span> <span class="function">parseAdd</span>(input: <span class="type">String</span>): <span class="type">Command</span> {
+        <span class="keyword">val</span> match = addPattern.<span class="function">find</span>(input) 
+            ?: <span class="keyword">return</span> <span class="type">Command</span>.<span class="type">Unknown</span>(input)
+        
+        <span class="keyword">val</span> title = match.<span class="function">groupValues</span>[<span class="number">1</span>]
+        <span class="keyword">val</span> flags = <span class="function">parseFlags</span>(match.<span class="function">groupValues</span>[<span class="number">2</span>])
+        
+        <span class="keyword">return</span> <span class="type">Command</span>.<span class="type">Add</span>(
+            title = title,
+            tags = flags[<span class="string">"tag"</span>]?.<span class="function">split</span>(<span class="string">","</span>) ?: <span class="function">emptyList</span>(),
+            priority = flags[<span class="string">"priority"</span>]
+                ?.<span class="function">let</span> { <span class="type">Priority</span>.<span class="function">fromString</span>(it) }
+                ?: <span class="type">Priority</span>.<span class="function">NORMAL</span>
+        )
+    }
+    
+    <span class="keyword">private fun</span> <span class="function">parseFlags</span>(input: <span class="type">String</span>): <span class="type">Map</span><<span class="type">String</span>, <span class="type">String</span>> =
+        flagPattern.<span class="function">findAll</span>(input)
+            .<span class="function">associate</span> { it.<span class="function">groupValues</span>[<span class="number">1</span>] <span class="keyword">to</span> (it.<span class="function">groupValues</span>[<span class="number">2</span>].<span class="function">ifEmpty</span> { <span class="string">"true"</span> }) }
+}</code></pre>
+
+                <h3>Result Type (Optional but Recommended)</h3>
+<pre><code><span class="keyword">sealed class</span> <span class="type">CommandResult</span> {
+    <span class="keyword">data class</span> <span class="type">Success</span>(<span class="keyword">val</span> message: <span class="type">String</span>) : <span class="type">CommandResult</span>()
+    <span class="keyword">data class</span> <span class="type">Error</span>(<span class="keyword">val</span> message: <span class="type">String</span>) : <span class="type">CommandResult</span>()
+    <span class="keyword">data class</span> <span class="type">NoteList</span>(<span class="keyword">val</span> notes: <span class="type">List</span><<span class="type">Note</span>>) : <span class="type">CommandResult</span>()
+    <span class="keyword">data class</span> <span class="type">NoteDetail</span>(<span class="keyword">val</span> note: <span class="type">Note</span>) : <span class="type">CommandResult</span>()
+    <span class="keyword">data object</span> <span class="type">Exit</span> : <span class="type">CommandResult</span>()
+}
+
+<span class="keyword">fun</span> <span class="function">display</span>(result: <span class="type">CommandResult</span>) = <span class="keyword">when</span> (result) {
+    <span class="keyword">is</span> <span class="type">CommandResult</span>.<span class="type">Success</span> -> <span class="function">println</span>(<span class="string">"✓ </span>${result.message}<span class="string">"</span>)
+    <span class="keyword">is</span> <span class="type">CommandResult</span>.<span class="type">Error</span> -> <span class="function">println</span>(<span class="string">"✗ </span>${result.message}<span class="string">"</span>)
+    <span class="keyword">is</span> <span class="type">CommandResult</span>.<span class="type">NoteList</span> -> result.notes.<span class="function">forEach</span> { <span class="function">printNoteSummary</span>(it) }
+    <span class="keyword">is</span> <span class="type">CommandResult</span>.<span class="type">NoteDetail</span> -> <span class="function">printNoteDetail</span>(result.note)
+    <span class="type">CommandResult</span>.<span class="type">Exit</span> -> <span class="function">println</span>(<span class="string">"Goodbye!"</span>)
+}</code></pre>
+
+                <h3>Main REPL Loop</h3>
+<pre><code><span class="keyword">fun</span> <span class="function">main</span>() {
+    <span class="type">NoteRepository</span>.<span class="function">loadFromDisk</span>()
+    <span class="function">println</span>(<span class="string">"📝 Note System - type 'help' for commands"</span>)
+    
+    <span class="function">generateSequence</span> {
+        <span class="function">print</span>(<span class="string">"notes> "</span>)
+        <span class="function">readlnOrNull</span>()
+    }
+    .<span class="function">map</span> { <span class="type">CommandParser</span>.<span class="function">parse</span>(it) }
+    .<span class="function">map</span> { <span class="type">CommandExecutor</span>.<span class="function">execute</span>(it) }
+    .<span class="function">takeWhile</span> { it != <span class="type">CommandResult</span>.<span class="type">Exit</span> }
+    .<span class="function">forEach</span> { <span class="function">display</span>(it) }
+    
+    <span class="type">NoteRepository</span>.<span class="function">saveToDisk</span>()
+}</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📚 Resources</h2>
+                <ul class="resource-list">
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/sealed-classes.html" target="_blank">Sealed Classes and Interfaces</a>
+                            <div class="meta">Essential reading — understand when vs enum</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/scope-functions.html" target="_blank">Scope Functions (let, run, apply, also, with)</a>
+                            <div class="meta">Know when to use each one</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/object-declarations.html" target="_blank">Object Declarations & Expressions</a>
+                            <div class="meta">Singletons, companion objects, anonymous objects</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/regex.html" target="_blank">Regex in Kotlin</a>
+                            <div class="meta">For command parsing</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📦</span>
+                        <div>
+                            <a href="https://github.com/Kotlin/kotlinx.serialization" target="_blank">kotlinx.serialization</a>
+                            <div class="meta">Recommended for JSON persistence</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📦</span>
+                        <div>
+                            <a href="https://ajalt.github.io/clikt/" target="_blank">Clikt - CLI parsing library</a>
+                            <div class="meta">Optional: if you want professional argument parsing</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PROJECT 3: QUIZ ENGINE -->
+        <div class="tab-content">
+            <div class="section project-header">
+                <span class="difficulty">Intermediate → Advanced</span>
+                <h2>🧠 Quiz Engine with DSL</h2>
+                <p>Build a quiz system with a Kotlin DSL for defining questions. This project will teach you lambdas with receivers — the most "Kotlin-specific" feature.</p>
+            </div>
+
+            <div class="section">
+                <h2>🎯 What You'll Build</h2>
+                
+                <h3>The DSL (Domain Specific Language)</h3>
+<pre><code><span class="keyword">val</span> kotlinQuiz = <span class="function">quiz</span>(<span class="string">"Kotlin Fundamentals"</span>) {
+    description = <span class="string">"Test your Kotlin knowledge!"</span>
+    passingScore = <span class="number">70</span>
+    
+    <span class="function">question</span>(<span class="string">"What keyword replaces 'switch' in Kotlin?"</span>) {
+        <span class="function">option</span>(<span class="string">"when"</span>, correct = <span class="keyword">true</span>)
+        <span class="function">option</span>(<span class="string">"match"</span>)
+        <span class="function">option</span>(<span class="string">"case"</span>)
+        <span class="function">option</span>(<span class="string">"select"</span>)
+        explanation = <span class="string">"'when' is Kotlin's replacement for switch, and it's an expression!"</span>
+    }
+    
+    <span class="function">question</span>(<span class="string">"Which is NOT a scope function?"</span>) {
+        <span class="function">option</span>(<span class="string">"let"</span>)
+        <span class="function">option</span>(<span class="string">"apply"</span>)
+        <span class="function">option</span>(<span class="string">"use"</span>, correct = <span class="keyword">true</span>)
+        <span class="function">option</span>(<span class="string">"also"</span>)
+        explanation = <span class="string">"'use' is for resource management, not a scope function"</span>
+        points = <span class="number">2</span>  <span class="comment">// harder question, more points</span>
+    }
+    
+    <span class="function">question</span>(<span class="string">"val vs var - val means..."</span>) {
+        <span class="function">option</span>(<span class="string">"Immutable reference"</span>, correct = <span class="keyword">true</span>)
+        <span class="function">option</span>(<span class="string">"Primitive type"</span>)
+        <span class="function">option</span>(<span class="string">"Value type"</span>)
+        <span class="function">option</span>(<span class="string">"Validated"</span>)
+    }
+}</code></pre>
+
+                <h3>The Quiz Runner</h3>
+                <div class="menu-example">
+                    <div class="output">════════════════════════════════════</div>
+                    <div class="output">   🧠 Kotlin Fundamentals Quiz</div>
+                    <div class="output">   3 questions | Pass: 70%</div>
+                    <div class="output">════════════════════════════════════</div><br>
+                    <div class="output"><strong>Question 1/3</strong> (1 point)</div>
+                    <div class="output">What keyword replaces 'switch' in Kotlin?</div><br>
+                    <div class="output">  1) when</div>
+                    <div class="output">  2) match</div>
+                    <div class="output">  3) case</div>
+                    <div class="output">  4) select</div><br>
+                    <span class="prompt">Your answer: </span><span>1</span><br><br>
+                    <div class="output">✓ Correct!</div>
+                    <div class="output" style="color: var(--text-muted)">💡 'when' is Kotlin's replacement for switch, and it's an expression!</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Features Breakdown</h2>
+                
+                <h3>MVP (Build This First)</h3>
+                <div class="feature-grid">
+                    <div class="feature-card mvp">
+                        <h4>DSL for Quiz Definition</h4>
+                        <p>quiz { }, question { }, option() builders using lambdas with receivers</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>Quiz Runner</h4>
+                        <p>Present questions, accept answers, track score</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>Results Summary</h4>
+                        <p>Show score, pass/fail, correct answers review</p>
+                    </div>
+                    <div class="feature-card mvp">
+                        <h4>Multiple Quizzes</h4>
+                        <p>Define multiple quizzes, let user choose which to take</p>
+                    </div>
+                </div>
+
+                <h3>Extended Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card extended">
+                        <h4>Timed Questions</h4>
+                        <p>Optional time limit per question, using coroutines</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Question Types</h4>
+                        <p>Multiple choice, true/false, multi-select, fill-in-blank</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Shuffle Options</h4>
+                        <p>Randomize question order and option order</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Load from File</h4>
+                        <p>Load quiz definitions from .kts scripts or JSON</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Score Persistence</h4>
+                        <p>Save high scores, track progress over time</p>
+                    </div>
+                    <div class="feature-card extended">
+                        <h4>Categories & Tags</h4>
+                        <p>Categorize questions, run quizzes by tag</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔑 Key Kotlin Concepts</h2>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>🎯 Lambdas with Receivers (DSL Core)</h4>
+                        <p><strong>This is THE concept to learn.</strong> A lambda with receiver lets you call methods on an implicit <code>this</code> inside the lambda. It's how DSLs work.</p>
+<pre><code><span class="comment">// Normal lambda</span>
+<span class="keyword">val</span> greet: (<span class="type">String</span>) -> <span class="type">Unit</span> = { name -> 
+    <span class="function">println</span>(<span class="string">"Hello </span>$name<span class="string">"</span>) 
+}
+
+<span class="comment">// Lambda WITH RECEIVER</span>
+<span class="keyword">val</span> greet: <span class="type">StringBuilder</span>.() -> <span class="type">Unit</span> = { 
+    <span class="comment">// 'this' is StringBuilder</span>
+    <span class="function">append</span>(<span class="string">"Hello!"</span>)  <span class="comment">// calling method on 'this'</span>
+}
+
+<span class="comment">// This is how quiz { } works:</span>
+<span class="keyword">fun</span> <span class="function">quiz</span>(name: <span class="type">String</span>, init: <span class="type">QuizBuilder</span>.() -> <span class="type">Unit</span>): <span class="type">Quiz</span> {
+    <span class="keyword">val</span> builder = <span class="type">QuizBuilder</span>(name)
+    builder.<span class="function">init</span>()  <span class="comment">// runs the lambda with builder as 'this'</span>
+    <span class="keyword">return</span> builder.<span class="function">build</span>()
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🏗️ Builder Pattern via DSL</h4>
+                        <p>Create builder classes that the DSL functions populate. The builder is the implicit receiver.</p>
+<pre><code><span class="keyword">class</span> <span class="type">QuizBuilder</span>(<span class="keyword">private val</span> name: <span class="type">String</span>) {
+    <span class="keyword">var</span> description: <span class="type">String</span> = <span class="string">""</span>
+    <span class="keyword">var</span> passingScore: <span class="type">Int</span> = <span class="number">60</span>
+    <span class="keyword">private val</span> questions = <span class="function">mutableListOf</span><<span class="type">Question</span>>()
+    
+    <span class="comment">// This is called inside quiz { }</span>
+    <span class="keyword">fun</span> <span class="function">question</span>(text: <span class="type">String</span>, init: <span class="type">QuestionBuilder</span>.() -> <span class="type">Unit</span>) {
+        <span class="keyword">val</span> builder = <span class="type">QuestionBuilder</span>(text)
+        builder.<span class="function">init</span>()
+        questions.<span class="function">add</span>(builder.<span class="function">build</span>())
+    }
+    
+    <span class="keyword">fun</span> <span class="function">build</span>(): <span class="type">Quiz</span> = <span class="type">Quiz</span>(name, description, passingScore, questions)
+}
+
+<span class="keyword">class</span> <span class="type">QuestionBuilder</span>(<span class="keyword">private val</span> text: <span class="type">String</span>) {
+    <span class="keyword">var</span> explanation: <span class="type">String</span>? = <span class="keyword">null</span>
+    <span class="keyword">var</span> points: <span class="type">Int</span> = <span class="number">1</span>
+    <span class="keyword">private val</span> options = <span class="function">mutableListOf</span><<span class="type">Option</span>>()
+    
+    <span class="keyword">fun</span> <span class="function">option</span>(text: <span class="type">String</span>, correct: <span class="type">Boolean</span> = <span class="keyword">false</span>) {
+        options.<span class="function">add</span>(<span class="type">Option</span>(text, correct))
+    }
+    
+    <span class="keyword">fun</span> <span class="function">build</span>(): <span class="type">Question</span> = <span class="type">Question</span>(text, options, explanation, points)
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>⚙️ Higher-Order Functions</h4>
+                        <p>Functions that take functions as parameters or return functions. The DSL builder functions are all higher-order.</p>
+<pre><code><span class="comment">// Function taking a function parameter</span>
+<span class="keyword">fun</span> <span class="function">runWithTimer</span>(
+    timeoutMs: <span class="type">Long</span>,
+    block: () -> <span class="type">Unit</span>
+) {
+    <span class="keyword">val</span> start = <span class="type">System</span>.<span class="function">currentTimeMillis</span>()
+    <span class="function">block</span>()
+    <span class="keyword">val</span> elapsed = <span class="type">System</span>.<span class="function">currentTimeMillis</span>() - start
+    <span class="function">println</span>(<span class="string">"Completed in </span>${elapsed}<span class="string">ms"</span>)
+}
+
+<span class="comment">// Function returning a function</span>
+<span class="keyword">fun</span> <span class="function">createValidator</span>(min: <span class="type">Int</span>, max: <span class="type">Int</span>): (<span class="type">Int</span>) -> <span class="type">Boolean</span> {
+    <span class="keyword">return</span> { value -> value <span class="keyword">in</span> min..max }
+}
+
+<span class="keyword">val</span> isValidAnswer = <span class="function">createValidator</span>(<span class="number">1</span>, <span class="number">4</span>)
+<span class="function">isValidAnswer</span>(<span class="number">3</span>)  <span class="comment">// true</span></code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>✅ require() and check()</h4>
+                        <p>Precondition functions built into Kotlin. Throw IllegalArgumentException or IllegalStateException with a message.</p>
+<pre><code><span class="keyword">fun</span> <span class="function">build</span>(): <span class="type">Question</span> {
+    <span class="comment">// Validate arguments</span>
+    <span class="function">require</span>(options.<span class="function">isNotEmpty</span>()) { 
+        <span class="string">"Question must have at least one option"</span> 
+    }
+    <span class="function">require</span>(options.<span class="function">count</span> { it.correct } == <span class="number">1</span>) { 
+        <span class="string">"Question must have exactly one correct answer"</span> 
+    }
+    
+    <span class="comment">// Validate state</span>
+    <span class="function">check</span>(text.<span class="function">isNotBlank</span>()) { 
+        <span class="string">"Question text cannot be blank"</span> 
+    }
+    
+    <span class="keyword">return</span> <span class="type">Question</span>(text, options.<span class="function">toList</span>(), explanation, points)
+}</code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🔄 Sequences (Lazy Evaluation)</h4>
+                        <p>Unlike Lists, Sequences process elements one at a time. Use for large data or when you want to stop early.</p>
+<pre><code><span class="comment">// Eager: processes ALL questions, then takes 5</span>
+questions
+    .<span class="function">filter</span> { it.category == <span class="string">"kotlin"</span> }
+    .<span class="function">shuffled</span>()
+    .<span class="function">take</span>(<span class="number">5</span>)
+
+<span class="comment">// Lazy: stops after finding 5 matching</span>
+questions.<span class="function">asSequence</span>()
+    .<span class="function">filter</span> { it.category == <span class="string">"kotlin"</span> }
+    .<span class="function">shuffled</span>()
+    .<span class="function">take</span>(<span class="number">5</span>)
+    .<span class="function">toList</span>()
+
+<span class="comment">// Generate infinite sequence</span>
+<span class="function">generateSequence</span>(<span class="number">1</span>) { it + <span class="number">1</span> }
+    .<span class="function">filter</span> { it % <span class="number">2</span> == <span class="number">0</span> }
+    .<span class="function">take</span>(<span class="number">10</span>)
+    .<span class="function">toList</span>()  <span class="comment">// [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]</span></code></pre>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📝 @DslMarker</h4>
+                        <p>Prevents accidentally accessing outer scope receivers in nested DSL blocks. Makes your DSL safer.</p>
+<pre><code><span class="annotation">@DslMarker</span>
+<span class="keyword">annotation class</span> <span class="type">QuizDsl</span>
+
+<span class="annotation">@QuizDsl</span>
+<span class="keyword">class</span> <span class="type">QuizBuilder</span>(<span class="keyword">val</span> name: <span class="type">String</span>) { ... }
+
+<span class="annotation">@QuizDsl</span>
+<span class="keyword">class</span> <span class="type">QuestionBuilder</span>(<span class="keyword">val</span> text: <span class="type">String</span>) { ... }
+
+<span class="comment">// Now this won't compile:</span>
+<span class="function">quiz</span>(<span class="string">"Test"</span>) {
+    <span class="function">question</span>(<span class="string">"Q1"</span>) {
+        <span class="comment">// Can't access 'description' from outer QuizBuilder</span>
+        <span class="comment">// description = "..." // ERROR!</span>
+        <span class="function">option</span>(<span class="string">"A"</span>, correct = <span class="keyword">true</span>)
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛠️ Implementation Guidance</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Define Data Models</h4>
+                        <p>Create <code>Quiz</code>, <code>Question</code>, <code>Option</code> data classes. Keep them immutable — builders will create them.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Build the DSL Builders</h4>
+                        <p>Create <code>QuizBuilder</code> and <code>QuestionBuilder</code>. Start simple — just collect data and have a <code>build()</code> method.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Create Top-Level quiz() Function</h4>
+                        <p>This is the entry point: <code>fun quiz(name: String, init: QuizBuilder.() -> Unit): Quiz</code>. Study this signature carefully!</p>
+                    </div>
+                    <div class="step">
+                        <h4>Test the DSL</h4>
+                        <p>Write some quizzes using your DSL. Does it feel natural? Can you express everything you need? Refine the API.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Build the Quiz Runner</h4>
+                        <p>Take a Quiz, iterate questions, collect answers, calculate score. Use <code>forEachIndexed</code>, <code>count</code>, etc.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Add Validation</h4>
+                        <p>Use <code>require()</code> in builders to ensure quizzes are valid (has questions, has correct answer, etc.)</p>
+                    </div>
+                    <div class="step">
+                        <h4>Add @DslMarker</h4>
+                        <p>Create a <code>@QuizDsl</code> annotation and apply it to your builders for scope safety.</p>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>Understanding lambdas with receivers is crucial.</strong> When you see <code>QuizBuilder.() -> Unit</code>, read it as "a function where <code>this</code> is a QuizBuilder". Inside that lambda, you can call QuizBuilder methods directly without qualification.
+                </div>
+
+                <div class="tip warning">
+                    <strong>Start without @DslMarker.</strong> Get the DSL working first, understand how nested receivers work, then add @DslMarker to see what it restricts.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Code Examples</h2>
+
+                <h3>Complete DSL Implementation</h3>
+<pre><code><span class="comment">// Data classes (immutable)</span>
+<span class="keyword">data class</span> <span class="type">Option</span>(<span class="keyword">val</span> text: <span class="type">String</span>, <span class="keyword">val</span> correct: <span class="type">Boolean</span> = <span class="keyword">false</span>)
+
+<span class="keyword">data class</span> <span class="type">Question</span>(
+    <span class="keyword">val</span> text: <span class="type">String</span>,
+    <span class="keyword">val</span> options: <span class="type">List</span><<span class="type">Option</span>>,
+    <span class="keyword">val</span> explanation: <span class="type">String</span>? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> points: <span class="type">Int</span> = <span class="number">1</span>
+)
+
+<span class="keyword">data class</span> <span class="type">Quiz</span>(
+    <span class="keyword">val</span> name: <span class="type">String</span>,
+    <span class="keyword">val</span> description: <span class="type">String</span>,
+    <span class="keyword">val</span> passingScore: <span class="type">Int</span>,
+    <span class="keyword">val</span> questions: <span class="type">List</span><<span class="type">Question</span>>
+) {
+    <span class="keyword">val</span> totalPoints: <span class="type">Int</span> <span class="keyword">get</span>() = questions.<span class="function">sumOf</span> { it.points }
+}
+
+<span class="comment">// DSL Marker for scope control</span>
+<span class="annotation">@DslMarker</span>
+<span class="keyword">annotation class</span> <span class="type">QuizDsl</span>
+
+<span class="comment">// Builders</span>
+<span class="annotation">@QuizDsl</span>
+<span class="keyword">class</span> <span class="type">QuestionBuilder</span>(<span class="keyword">private val</span> text: <span class="type">String</span>) {
+    <span class="keyword">var</span> explanation: <span class="type">String</span>? = <span class="keyword">null</span>
+    <span class="keyword">var</span> points: <span class="type">Int</span> = <span class="number">1</span>
+    <span class="keyword">private val</span> options = <span class="function">mutableListOf</span><<span class="type">Option</span>>()
+    
+    <span class="keyword">fun</span> <span class="function">option</span>(text: <span class="type">String</span>, correct: <span class="type">Boolean</span> = <span class="keyword">false</span>) {
+        options += <span class="type">Option</span>(text, correct)
+    }
+    
+    <span class="keyword">fun</span> <span class="function">build</span>(): <span class="type">Question</span> {
+        <span class="function">require</span>(options.size >= <span class="number">2</span>) { <span class="string">"Need at least 2 options"</span> }
+        <span class="function">require</span>(options.<span class="function">count</span> { it.correct } == <span class="number">1</span>) { <span class="string">"Need exactly 1 correct answer"</span> }
+        <span class="keyword">return</span> <span class="type">Question</span>(text, options.<span class="function">toList</span>(), explanation, points)
+    }
+}
+
+<span class="annotation">@QuizDsl</span>
+<span class="keyword">class</span> <span class="type">QuizBuilder</span>(<span class="keyword">private val</span> name: <span class="type">String</span>) {
+    <span class="keyword">var</span> description: <span class="type">String</span> = <span class="string">""</span>
+    <span class="keyword">var</span> passingScore: <span class="type">Int</span> = <span class="number">60</span>
+    <span class="keyword">private val</span> questions = <span class="function">mutableListOf</span><<span class="type">Question</span>>()
+    
+    <span class="keyword">fun</span> <span class="function">question</span>(text: <span class="type">String</span>, init: <span class="type">QuestionBuilder</span>.() -> <span class="type">Unit</span>) {
+        questions += <span class="type">QuestionBuilder</span>(text).<span class="function">apply</span>(init).<span class="function">build</span>()
+    }
+    
+    <span class="keyword">fun</span> <span class="function">build</span>(): <span class="type">Quiz</span> {
+        <span class="function">require</span>(questions.<span class="function">isNotEmpty</span>()) { <span class="string">"Quiz must have questions"</span> }
+        <span class="keyword">return</span> <span class="type">Quiz</span>(name, description, passingScore, questions.<span class="function">toList</span>())
+    }
+}
+
+<span class="comment">// Top-level DSL entry point</span>
+<span class="keyword">fun</span> <span class="function">quiz</span>(name: <span class="type">String</span>, init: <span class="type">QuizBuilder</span>.() -> <span class="type">Unit</span>): <span class="type">Quiz</span> =
+    <span class="type">QuizBuilder</span>(name).<span class="function">apply</span>(init).<span class="function">build</span>()</code></pre>
+
+                <h3>Quiz Runner</h3>
+<pre><code><span class="keyword">class</span> <span class="type">QuizRunner</span>(<span class="keyword">private val</span> quiz: <span class="type">Quiz</span>) {
+    
+    <span class="keyword">fun</span> <span class="function">run</span>(): <span class="type">QuizResult</span> {
+        <span class="function">printHeader</span>()
+        
+        <span class="keyword">var</span> score = <span class="number">0</span>
+        <span class="keyword">val</span> answers = <span class="function">mutableListOf</span><<span class="type">AnswerRecord</span>>()
+        
+        quiz.questions.<span class="function">forEachIndexed</span> { index, question ->
+            <span class="function">println</span>(<span class="string">"\n</span><span class="function">Question ${index + 1}/${quiz.questions.size}</span><span class="string"> (</span>${question.points}<span class="string"> pt)"</span>)
+            <span class="function">println</span>(question.text)
+            <span class="function">println</span>()
+            
+            question.options.<span class="function">forEachIndexed</span> { i, option ->
+                <span class="function">println</span>(<span class="string">"  </span>${i + <span class="number">1</span>}<span class="string">) </span>${option.text}<span class="string">"</span>)
+            }
+            
+            <span class="keyword">val</span> answer = <span class="function">promptForAnswer</span>(question.options.size)
+            <span class="keyword">val</span> selectedOption = question.options[answer - <span class="number">1</span>]
+            <span class="keyword">val</span> isCorrect = selectedOption.correct
+            
+            <span class="keyword">if</span> (isCorrect) {
+                <span class="function">println</span>(<span class="string">"✓ Correct!"</span>)
+                score += question.points
+            } <span class="keyword">else</span> {
+                <span class="keyword">val</span> correctAnswer = question.options.<span class="function">first</span> { it.correct }
+                <span class="function">println</span>(<span class="string">"✗ Wrong! Correct answer: </span>${correctAnswer.text}<span class="string">"</span>)
+            }
+            
+            question.explanation?.<span class="function">let</span> { 
+                <span class="function">println</span>(<span class="string">"💡 </span>$it<span class="string">"</span>) 
+            }
+            
+            answers += <span class="type">AnswerRecord</span>(question, selectedOption, isCorrect)
+        }
+        
+        <span class="keyword">return</span> <span class="type">QuizResult</span>(quiz, score, answers)
+    }
+    
+    <span class="keyword">private fun</span> <span class="function">promptForAnswer</span>(maxOption: <span class="type">Int</span>): <span class="type">Int</span> {
+        <span class="keyword">while</span> (<span class="keyword">true</span>) {
+            <span class="function">print</span>(<span class="string">"\nYour answer (1-</span>$maxOption<span class="string">): "</span>)
+            <span class="keyword">val</span> input = <span class="function">readln</span>().<span class="function">toIntOrNull</span>()
+            <span class="keyword">if</span> (input != <span class="keyword">null</span> && input <span class="keyword">in</span> <span class="number">1</span>..maxOption) {
+                <span class="keyword">return</span> input
+            }
+            <span class="function">println</span>(<span class="string">"Invalid input, try again."</span>)
+        }
+    }
+    
+    <span class="keyword">private fun</span> <span class="function">printHeader</span>() {
+        <span class="function">println</span>(<span class="string">"═"</span>.<span class="function">repeat</span>(<span class="number">40</span>))
+        <span class="function">println</span>(<span class="string">"   🧠 </span>${quiz.name}<span class="string">"</span>)
+        <span class="function">println</span>(<span class="string">"   </span>${quiz.questions.size}<span class="string"> questions | Pass: </span>${quiz.passingScore}<span class="string">%"</span>)
+        <span class="function">println</span>(<span class="string">"═"</span>.<span class="function">repeat</span>(<span class="number">40</span>))
+    }
+}
+
+<span class="keyword">data class</span> <span class="type">AnswerRecord</span>(
+    <span class="keyword">val</span> question: <span class="type">Question</span>,
+    <span class="keyword">val</span> selected: <span class="type">Option</span>,
+    <span class="keyword">val</span> correct: <span class="type">Boolean</span>
+)
+
+<span class="keyword">data class</span> <span class="type">QuizResult</span>(
+    <span class="keyword">val</span> quiz: <span class="type">Quiz</span>,
+    <span class="keyword">val</span> score: <span class="type">Int</span>,
+    <span class="keyword">val</span> answers: <span class="type">List</span><<span class="type">AnswerRecord</span>>
+) {
+    <span class="keyword">val</span> percentage: <span class="type">Int</span> <span class="keyword">get</span>() = (score * <span class="number">100</span>) / quiz.totalPoints
+    <span class="keyword">val</span> passed: <span class="type">Boolean</span> <span class="keyword">get</span>() = percentage >= quiz.passingScore
+}</code></pre>
+
+                <h3>Main Program</h3>
+<pre><code><span class="keyword">fun</span> <span class="function">main</span>() {
+    <span class="keyword">val</span> kotlinQuiz = <span class="function">quiz</span>(<span class="string">"Kotlin Basics"</span>) {
+        description = <span class="string">"Test your Kotlin fundamentals"</span>
+        passingScore = <span class="number">70</span>
+        
+        <span class="function">question</span>(<span class="string">"What is the Kotlin equivalent of 'switch'?"</span>) {
+            <span class="function">option</span>(<span class="string">"when"</span>, correct = <span class="keyword">true</span>)
+            <span class="function">option</span>(<span class="string">"match"</span>)
+            <span class="function">option</span>(<span class="string">"case"</span>)
+            <span class="function">option</span>(<span class="string">"select"</span>)
+            explanation = <span class="string">"'when' can be used as both statement and expression"</span>
+        }
+        
+        <span class="function">question</span>(<span class="string">"What does 'val' declare?"</span>) {
+            <span class="function">option</span>(<span class="string">"Mutable variable"</span>)
+            <span class="function">option</span>(<span class="string">"Immutable reference"</span>, correct = <span class="keyword">true</span>)
+            <span class="function">option</span>(<span class="string">"Constant"</span>)
+            <span class="function">option</span>(<span class="string">"Value type"</span>)
+        }
+    }
+    
+    <span class="keyword">val</span> result = <span class="type">QuizRunner</span>(kotlinQuiz).<span class="function">run</span>()
+    
+    <span class="function">println</span>(<span class="string">"\n"</span> + <span class="string">"═"</span>.<span class="function">repeat</span>(<span class="number">40</span>))
+    <span class="function">println</span>(<span class="string">"Score: </span>${result.score}<span class="string">/</span>${result.quiz.totalPoints}<span class="string"> (</span>${result.percentage}<span class="string">%)"</span>)
+    <span class="function">println</span>(<span class="keyword">if</span> (result.passed) <span class="string">"🎉 PASSED!"</span> <span class="keyword">else</span> <span class="string">"❌ Not passed"</span>)
+}</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>📚 Resources</h2>
+                <ul class="resource-list">
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/lambdas.html#function-literals-with-receiver" target="_blank">Lambdas with Receivers</a>
+                            <div class="meta">Official docs — this is the core DSL mechanic</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/type-safe-builders.html" target="_blank">Type-Safe Builders</a>
+                            <div class="meta">Official guide to building DSLs in Kotlin</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/sequences.html" target="_blank">Sequences</a>
+                            <div class="meta">Lazy evaluation for collections</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📺</span>
+                        <div>
+                            <a href="https://www.youtube.com/watch?v=XpHQ3kXkwd4" target="_blank">Writing DSLs in Kotlin (KotlinConf)</a>
+                            <div class="meta">Great conference talk on DSL design</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📖</span>
+                        <div>
+                            <a href="https://kotlinlang.org/docs/coding-conventions.html" target="_blank">Kotlin Coding Conventions</a>
+                            <div class="meta">Write idiomatic Kotlin</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">📦</span>
+                        <div>
+                            <a href="https://github.com/Kotlin/kotlinx.html" target="_blank">kotlinx.html</a>
+                            <div class="meta">Real-world DSL example to study</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(index) {
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.tab-content').forEach((content, i) => {
+                content.classList.toggle('active', i === index);
+            });
+        }
+    </script>
+</body>
+</html>
