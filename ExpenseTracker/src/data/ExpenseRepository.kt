@@ -4,6 +4,7 @@ import asCurrency
 import print
 import toDisplayDate
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 
 // Just so I don't have everything in Main
@@ -68,9 +69,13 @@ class ExpenseRepository {
         val runningTotal = getRunningTotal()
         val rows = groups.map { (category, expenses) ->
             val totalExpensesAmount = expenses.sumOf { it.amount }
-            val percent = totalExpensesAmount
-                .divide(runningTotal)
-                .multiply(BigDecimal(100))
+            val percent = if (runningTotal > BigDecimal.ZERO) {
+                totalExpensesAmount
+                    .multiply(BigDecimal(100))
+                    .divide(runningTotal, 2, RoundingMode.HALF_UP)
+            } else {
+                BigDecimal.ZERO
+            }
 
             listOf(
                 category.label,
