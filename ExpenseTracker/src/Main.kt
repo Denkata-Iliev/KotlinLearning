@@ -9,6 +9,7 @@ fun main() {
             1 -> repository.addExpense()
             2 -> repository.printExpenses()
             3 -> repository.printCategorySummary()
+            6 -> repository.removeExpense()
             0, null -> break
             else -> println("Invalid option. Try again.")
         }

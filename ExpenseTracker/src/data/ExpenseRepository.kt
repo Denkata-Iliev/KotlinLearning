@@ -6,6 +6,8 @@ import toDisplayDate
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // Just so I don't have everything in Main
 private const val DESCRIPTION_LENGTH = 70
@@ -88,6 +90,29 @@ class ExpenseRepository {
         val headers = listOf("Category", "Amount Spent", "Expense Count", "% of Total")
 
         print(TableRenderer.renderTable(headers, rows))
+    }
+
+    fun removeExpense() {
+        val id = inputId()
+        if (id == null) {
+            println("Input a valid id. Use the 'list' option and copy the id.")
+            return
+        }
+
+        val index = expenses.indexOfFirst { it.id == id }
+        if (index == -1) {
+            println("Could not find expense with id: $id")
+            return
+        }
+        expenses.removeAt(index)
+        println("Successfully removed expense")
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun inputId(): String? {
+        println("Id:")
+        val id = readln().takeIf { it.isNotBlank() && Uuid.parseOrNull(it) != null }
+        return id
     }
 
     private fun inputAmount(): BigDecimal? {
