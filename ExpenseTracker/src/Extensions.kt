@@ -3,7 +3,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-private val DATE_DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+val DATE_DISPLAY_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
 fun BigDecimal.asCurrency(): String = "${this}€"
 

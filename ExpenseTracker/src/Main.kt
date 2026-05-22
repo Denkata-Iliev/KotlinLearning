@@ -2,6 +2,14 @@ import data.ExpenseRepository
 
 private val repository: ExpenseRepository = ExpenseRepository()
 fun main() {
+    if (CsvConverter.file.exists()) {
+        println("Do you want to load your previous expenses or start anew? y/n")
+        val answer = readln().trim().lowercase()
+        if (answer == "y") {
+            repository.loadFromFile()
+        }
+    }
+
     while (true) {
         printMainMenu()
 
@@ -10,6 +18,7 @@ fun main() {
             2 -> repository.printExpenses()
             3 -> repository.printCategorySummary()
             6 -> repository.removeExpense()
+            7 -> repository.saveToFile()
             0, null -> break
             else -> println("Invalid option. Try again.")
         }

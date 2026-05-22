@@ -1,5 +1,7 @@
 package data
 
+import CsvConverter
+import TableRenderer
 import asCurrency
 import print
 import toDisplayDate
@@ -106,6 +108,26 @@ class ExpenseRepository {
         }
         expenses.removeAt(index)
         println("Successfully removed expense")
+    }
+
+    fun saveToFile() {
+        if (!CsvConverter.file.exists()) {
+            CsvConverter.file.createNewFile()
+        }
+
+        CsvConverter.file.writeText(expenses.joinToString("\n") { CsvConverter.serialize(it) })
+        println("Saved expenses to file")
+    }
+
+    fun loadFromFile() {
+        expenses.clear()
+        val loaded = CsvConverter.file
+            .readLines()
+            .filter { it.isNotBlank() }
+            .mapNotNull { CsvConverter.deserialize(it) }
+            .toMutableList()
+
+        expenses.addAll(loaded)
     }
 
     @OptIn(ExperimentalUuidApi::class)
