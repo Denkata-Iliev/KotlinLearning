@@ -18,8 +18,20 @@ private val MAX_AMOUNT = BigDecimal(1000)
 class ExpenseRepository {
     private val expenses: MutableList<Expense> = mutableListOf()
 
-    fun printExpenses() {
-        val rows = expenses.map {
+    fun searchExpense() {
+        println("Search:")
+        val input = readln().trim().lowercase()
+
+        val result = expenses.filter { it.description.contains(input, true) }
+        printExpenses(result)
+    }
+
+    fun printExpenses(expensesToPrint: List<Expense>? = null) {
+        // if showing search results, we don't want to show the running total.
+        // it should be shown only when listing ALL expenses
+        val showRunningTotal = expensesToPrint?.size?.let { it <= 0 } ?: true
+        val list = expensesToPrint ?: expenses
+        val rows = list.map {
             listOf(
                 it.id,
                 it.amount.asCurrency(),
@@ -32,8 +44,10 @@ class ExpenseRepository {
         val headers = listOf("ID", "Amount", "Description", "Date", "Category")
 
         val str = buildString {
-            append(TableRenderer.renderTable(headers, rows, true))
-            appendLine("Running total: ${getRunningTotal().asCurrency()}")
+            append(TableRenderer.renderTable(headers, rows, showRunningTotal))
+            if (showRunningTotal) {
+                appendLine("Running total: ${getRunningTotal().asCurrency()}")
+            }
         }
 
         print(str)
