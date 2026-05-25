@@ -18,6 +18,42 @@ private val MAX_AMOUNT = BigDecimal(1000)
 class ExpenseRepository {
     private val expenses: MutableList<Expense> = mutableListOf()
 
+    fun filterByDateRange() {
+        println("Filter by:")
+        println(
+            """
+            1. Date range (start to end date)
+            2. This week
+            3. This month
+            4. This year
+        """.trimIndent()
+        )
+
+        var startDate: LocalDate
+        var endDate: LocalDate? = null
+        when (readln().toIntOrNull()) {
+            1 -> inputStartEndDate()?.let { (s, e) ->
+                startDate = s
+                endDate = e
+            } ?: return
+
+            2 -> startDate = LocalDate.now().minusWeeks(1)
+            3 -> startDate = LocalDate.now().minusMonths(1)
+            4 -> startDate = LocalDate.now().minusYears(1)
+            else -> {
+                println("Welp...")
+                return
+            }
+        }
+
+        if (endDate == null) {
+            endDate = LocalDate.now()
+        }
+
+        val result = expenses.filter { it.date in startDate..endDate }
+        printExpenses(result)
+    }
+
     fun searchExpense() {
         println("Search:")
         val input = readln().trim().lowercase()
@@ -184,6 +220,21 @@ class ExpenseRepository {
         return categories.getOrElse(index) {
             Category.OTHER
         }
+    }
+
+    private fun inputStartEndDate(): Pair<LocalDate, LocalDate>? {
+        println("Start date (YYY-MM-dd):")
+        val startInput = readln()
+        val startDate = if (startInput.isEmpty()) null else LocalDate.parse(startInput)
+        println("End date (YYY-MM-dd):")
+        val endInput = readln()
+        val endDate = if (endInput.isEmpty()) null else LocalDate.parse(endInput)
+
+        if (startDate == null || endDate == null) {
+            return null
+        }
+
+        return Pair(startDate, endDate)
     }
 
     private fun getRunningTotal() = expenses.sumOf { it.amount }

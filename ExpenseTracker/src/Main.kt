@@ -17,6 +17,7 @@ fun main() {
             1 -> repository.addExpense()
             2 -> repository.printExpenses()
             3 -> repository.printCategorySummary()
+            4 -> repository.filterByDateRange()
             5 -> repository.searchExpense()
             6 -> repository.removeExpense()
             7 -> repository.saveToFile()
