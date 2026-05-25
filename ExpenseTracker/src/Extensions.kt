@@ -10,7 +10,7 @@ fun BigDecimal.asCurrency(): String = "${this}€"
 
 fun LocalDate.toDisplayDate(): String = DATE_DISPLAY_FORMATTER.format(this)
 
-fun Array<Category>.print() = println(
+fun Array<Category>.printCategoryOptions() = println(
     this.joinToString("\n") { "${it.ordinal + 1}: ${it.label}" }
 )
 

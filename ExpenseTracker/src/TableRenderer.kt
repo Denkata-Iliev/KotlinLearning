@@ -21,18 +21,15 @@ object TableRenderer {
                 postfix = " |"
             )
 
-        val sb = StringBuilder()
+        return buildString {
+            appendLine(formatRow(headers))
+            rows.forEach {
+                appendLine(formatRow(it))
+            }
 
-        sb.appendLine(formatRow(headers))
-
-        rows.forEach {
-            sb.appendLine(formatRow(it))
+            if (includeBottomLine) {
+                appendLine("—".repeat(formatRow(headers).length))
+            }
         }
-
-        if (includeBottomLine) {
-            sb.appendLine("—".repeat(formatRow(headers).length))
-        }
-
-        return sb.toString()
     }
 }

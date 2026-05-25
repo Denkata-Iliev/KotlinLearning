@@ -4,7 +4,7 @@ import CsvConverter
 import TableRenderer
 import asCurrency
 import average
-import print
+import printCategoryOptions
 import toDisplayDate
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -137,25 +137,15 @@ class ExpenseRepository {
         """.trimIndent()
         )
 
-        var startDate: LocalDate
-        var endDate: LocalDate? = null
-        when (readln().toIntOrNull()) {
-            1 -> inputStartEndDate()?.let { (s, e) ->
-                startDate = s
-                endDate = e
-            } ?: return
-
-            2 -> startDate = LocalDate.now().minusWeeks(1)
-            3 -> startDate = LocalDate.now().minusMonths(1)
-            4 -> startDate = LocalDate.now().minusYears(1)
+        val (startDate, endDate) = when (readln().toIntOrNull()) {
+            1 -> inputStartEndDate() ?: return
+            2 -> LocalDate.now().minusWeeks(1) to LocalDate.now()
+            3 -> LocalDate.now().minusMonths(1) to LocalDate.now()
+            4 -> LocalDate.now().minusYears(1) to LocalDate.now()
             else -> {
                 println("Welp...")
                 return
             }
-        }
-
-        if (endDate == null) {
-            endDate = LocalDate.now()
         }
 
         val result = expenses.filter { it.date in startDate..endDate }
@@ -173,7 +163,7 @@ class ExpenseRepository {
     fun printExpenses(expensesToPrint: List<Expense>? = null) {
         // if showing search results, we don't want to show the running total.
         // it should be shown only when listing ALL expenses
-        val showRunningTotal = expensesToPrint?.size?.let { it <= 0 } ?: true
+        val showRunningTotal = expensesToPrint == null || expensesToPrint.isNotEmpty()
         val list = expensesToPrint ?: expenses
         val rows = list.map {
             listOf(
@@ -322,7 +312,7 @@ class ExpenseRepository {
     private fun inputCategory(): Category {
         println("Category - choose a number from the list. If no or invalid option is chosen, default is 'Other':")
         val categories = Category.entries.toTypedArray()
-        categories.print()
+        categories.printCategoryOptions()
 
         val index = readln().toIntOrNull()?.minus(1) ?: return Category.OTHER
         return categories.getOrElse(index) {
@@ -342,14 +332,14 @@ class ExpenseRepository {
             return null
         }
 
-        return Pair(startDate, endDate)
+        return startDate to endDate
     }
 
     private fun getHighestLowestExpense(): Pair<Expense, Expense> {
         val max = expenses.maxBy { it.amount }
         val min = expenses.minBy { it.amount }
 
-        return Pair(max, min)
+        return max to min
     }
 
     private fun getRunningTotal() = expenses.sumOf { it.amount }
