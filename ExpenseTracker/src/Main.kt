@@ -21,6 +21,7 @@ fun main() {
             5 -> repository.searchExpense()
             6 -> repository.removeExpense()
             7 -> repository.saveToFile()
+            8 -> repository.printStats()
             0, null -> break
             else -> println("Invalid option. Try again.")
         }
@@ -43,6 +44,7 @@ private fun printMainMenu() {
         5) Search expenses
         6) Delete expense
         7) Export to CSV
+        8) Statistics
         0) Exit (empty option also exits)
         ══════════════════════════════════
         Choose an option:

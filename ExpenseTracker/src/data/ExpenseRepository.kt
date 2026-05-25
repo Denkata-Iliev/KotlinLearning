@@ -3,11 +3,14 @@ package data
 import CsvConverter
 import TableRenderer
 import asCurrency
+import average
 import print
 import toDisplayDate
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -17,6 +20,111 @@ private val MAX_AMOUNT = BigDecimal(1000)
 
 class ExpenseRepository {
     private val expenses: MutableList<Expense> = mutableListOf()
+
+    fun printStats() {
+        println("""
+            ════════════════════════════
+                    📈 STATISTICS
+            ════════════════════════════
+        """.trimIndent())
+        if (expenses.isEmpty()) {
+            println("You don't have any expenses yet, so there is nothing to show here.")
+            return
+        }
+        // total exp count
+        val totalExpCount = expenses.size
+        println("Total expenses: $totalExpCount")
+
+        // running total
+        val total = getRunningTotal()
+        println("Total spent: ${total.asCurrency()}")
+        println()
+
+        // avg exp
+        val avg = expenses.map { it.amount }.average()
+        println("Average expense: ${avg.asCurrency()}")
+
+        // avg daily exp
+        val now = LocalDate.now()
+        val thisYearExpenses = expenses.filter { it.date.year == now.year }
+        val totalThisYear = thisYearExpenses.sumOf { it.amount }
+
+        val activeDays = thisYearExpenses.distinctBy { it.date }.size
+        val avgDaily =
+            if (activeDays == 0) BigDecimal.ZERO
+            else totalThisYear.divide(BigDecimal(activeDays), 2, RoundingMode.HALF_UP)
+
+        println("Average daily expense: ${avgDaily.asCurrency()}")
+        println()
+
+        // highest exp
+        // lowest exp
+        val (highest, lowest) = getHighestLowestExpense()
+        println("Highest expense: ${highest.amount.asCurrency()} (${highest.description})")
+        println("Lowest expense: ${lowest.amount.asCurrency()} (${lowest.description})")
+        println()
+
+        val groupByCategory = expenses.groupBy { it.category }
+        // most expensive cat
+        val categoryAmountPair = groupByCategory.map {
+            val amount = it.value.sumOf { exp -> exp.amount }
+            Pair(it.key, amount)
+        }.maxBy { it.second }
+        println("Most expensive category: ${categoryAmountPair.first.label} - ${categoryAmountPair.second.asCurrency()}")
+        /* Alternative, more Kotlin-ish way:
+        val categoryAmountPair1 = expenses
+            .groupBy { it.category }
+            .mapValues { (_, exps) -> exps.sumOf { it.amount } }
+            .maxBy { it.value } */
+
+        // most used category
+        val categoryUseCountPair = groupByCategory
+            .mapValues { it.value.size }
+            .maxBy { it.value }
+        println("Most used category: ${categoryUseCountPair.key.label} - ${categoryUseCountPair.value} expenses")
+        println()
+
+        // this month total
+        val monthTotal = expenses.filter { it.date.month == now.month && it.date.year == now.year }.sumOf { it.amount }
+        println("Month total: ${monthTotal.asCurrency()}")
+        // this year total
+        println("Year total: ${totalThisYear.asCurrency()}")
+        println()
+
+        // top 5 expenses
+        println("""
+            Top 5 expenses
+            ────────────────────
+        """.trimIndent())
+        val topFiveExpenses = expenses
+            .sortedByDescending { it.amount }
+            .take(5)
+            .joinToString("\n") { "${it.amount.asCurrency()} - ${it.description}" }
+        println(topFiveExpenses)
+
+        println()
+        /*
+        * Monthly comparison
+        ────────────────────
+        Jan 2026: 10
+        Feb 2026: 70
+        Mar 2026: 150
+        Apr 2026: 79
+        May 2026: 449
+                * */
+        println("""
+            Monthly comparison
+            ────────────────────
+        """.trimIndent())
+        val locale = Locale.ENGLISH
+        val monthlyComparison = expenses.filter { it.date.year == now.year }
+            .groupBy { it.date.month }
+            .mapValues { (_, exps) -> exps.sumOf { it.amount } }
+            .toSortedMap()
+            .toList()
+            .joinToString("\n") { "${it.first.getDisplayName(TextStyle.SHORT, locale)}: ${it.second.asCurrency()}" }
+        println(monthlyComparison)
+    }
 
     fun filterByDateRange() {
         println("Filter by:")
@@ -235,6 +343,13 @@ class ExpenseRepository {
         }
 
         return Pair(startDate, endDate)
+    }
+
+    private fun getHighestLowestExpense(): Pair<Expense, Expense> {
+        val max = expenses.maxBy { it.amount }
+        val min = expenses.minBy { it.amount }
+
+        return Pair(max, min)
     }
 
     private fun getRunningTotal() = expenses.sumOf { it.amount }
