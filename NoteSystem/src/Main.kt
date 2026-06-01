@@ -4,7 +4,7 @@ fun main() {
         readln()
     }
         .map(CommandParser::parseCommand)
-        .takeWhile { it != Command.Exit }
         .map(CommandExecutor::execute)
-        .forEach(::println)
+        .takeWhile { it != CommandResult.Exit }
+        .forEach(CommandResult::display)
 }
