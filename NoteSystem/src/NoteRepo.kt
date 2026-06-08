@@ -6,4 +6,6 @@ object NoteRepo {
     }
 
     fun getAll(): List<Note> = notes.toList()
+
+    fun getById(id: Int): Note? = notes.find { it.id == id }
 }

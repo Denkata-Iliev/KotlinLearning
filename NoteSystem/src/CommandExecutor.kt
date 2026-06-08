@@ -3,7 +3,7 @@ object CommandExecutor {
     fun execute(command: Command): CommandResult = when (command) {
         is Command.Add -> executeAdd(command)
         is Command.Archive -> TODO()
-        is Command.Details -> TODO()
+        is Command.Details -> show(command)
         is Command.Edit -> TODO()
         is Command.EditTags -> TODO()
         is Command.ListAll -> executeListAll(command)
@@ -18,6 +18,16 @@ object CommandExecutor {
         }
 
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
+    }
+
+    private fun show(command: Command.Details): CommandResult {
+        val note = repo.getById(command.id) ?: return CommandResult.Error("Note with this id not found.")
+        println("""
+            Title: ${note.title}
+            Tags: ${note.tags.joinToString(", ")}
+            Priority: ${note.priority}
+        """.trimIndent())
+        return CommandResult.Success("")
     }
 
     private fun executeAdd(command: Command.Add): CommandResult {

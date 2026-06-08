@@ -4,7 +4,12 @@ fun main() {
         readln()
     }
         .map(CommandParser::parseCommand)
-        .map(CommandExecutor::execute)
+        .map {
+            when (it) {
+                is ParseResult.Success -> CommandExecutor.execute(it.command)
+                is ParseResult.Error -> CommandResult.Error(it.error)
+            }
+        }
         .takeWhile { it != CommandResult.Exit }
         .forEach(CommandResult::display)
 }
