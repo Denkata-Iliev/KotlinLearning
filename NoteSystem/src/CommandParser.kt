@@ -9,9 +9,40 @@ object CommandParser {
             trimmedInput.startsWith("add ") -> parseAdd(trimmedInput)
             trimmedInput.startsWith("list") -> parseListAll(trimmedInput)
             trimmedInput.startsWith("show ") -> parseShow(trimmedInput)
+            trimmedInput.startsWith("delete ") -> parseDelete(trimmedInput)
             trimmedInput == "exit" -> ParseResult.Success(Command.Exit)
             else -> ParseResult.Success(Command.Unknown)
         }
+    }
+
+    private fun parseDelete(trimmedInput: String): ParseResult {
+        val split = trimmedInput.lowercase().split(" ")
+        if (split.size !in 2..3) {
+            return ParseResult.Error("Usage: delete <id> [--force]. Id must be a number.")
+        }
+
+        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: delete <id> [--force]. Id must be a number.")
+
+        val result = ParseResult.Success(Command.Delete(id))
+        if (split.size == 2) {
+            println("Are you sure you want to delete this note? y/n")
+
+            val confirmed = when (readln()) {
+                "y" -> true
+                "n" -> false
+                else -> return ParseResult.Error("Answer not recognized. Operation cancelled.")
+            }
+
+            if (confirmed) {
+                return result
+            }
+        }
+
+        if (split[2] != "--force") {
+            return ParseResult.Error("Usage: delete <id> [--force]. Id must be a number.")
+        }
+
+        return result
     }
 
     private fun parseShow(trimmedInput: String): ParseResult {
