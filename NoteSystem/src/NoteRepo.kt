@@ -9,7 +9,17 @@ object NoteRepo {
 
     fun getById(id: Int): Note? = notes.find { it.id == id }
 
-    fun deleteById(id: Int): Boolean {
-        return notes.removeIf { it.id == id }
+    fun delete(id: Int) = notes.removeIf { it.id == id }
+
+    fun archive(id: Int) = updateNote(id) { it.copy(archived = true) }
+
+    fun unarchive(id: Int) = updateNote(id) { it.copy(archived = false) }
+
+    private fun updateNote(id: Int, transformNote: (note: Note) -> Note): Boolean {
+        val index = notes.indexOfFirst { it.id == id }
+            .takeIf { it != -1 } ?: return false
+
+        notes[index] = transformNote(notes[index])
+        return true
     }
 }

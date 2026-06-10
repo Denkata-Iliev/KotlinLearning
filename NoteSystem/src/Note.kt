@@ -3,4 +3,5 @@ data class Note(
     val title: String,
     val tags: List<String>,
     val priority: Int,
+    val archived: Boolean = false,
 )

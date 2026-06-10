@@ -10,9 +10,27 @@ object CommandParser {
             trimmedInput.startsWith("list") -> parseListAll(trimmedInput)
             trimmedInput.startsWith("show ") -> parseShow(trimmedInput)
             trimmedInput.startsWith("delete ") -> parseDelete(trimmedInput)
+            trimmedInput.startsWith("archive ") -> parseArchive(trimmedInput)
+            trimmedInput.startsWith("unarchive ") -> parseUnarchive(trimmedInput)
             trimmedInput == "exit" -> ParseResult.Success(Command.Exit)
             else -> ParseResult.Success(Command.Unknown)
         }
+    }
+
+    private fun parseArchive(trimmedInput: String): ParseResult {
+        val split = trimmedInput.split(" ")
+
+        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: archive <id>. Id must be a number.")
+
+        return ParseResult.Success(Command.Archive(id))
+    }
+
+    private fun parseUnarchive(trimmedInput: String): ParseResult {
+        val split = trimmedInput.split(" ")
+
+        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: archive <id>. Id must be a number.")
+
+        return ParseResult.Success(Command.Unarchive(id))
     }
 
     private fun parseDelete(trimmedInput: String): ParseResult {

@@ -2,14 +2,14 @@ object CommandExecutor {
     private val repo = NoteRepo
     fun execute(command: Command): CommandResult = when (command) {
         is Command.Add -> add(command)
-        is Command.Archive -> TODO()
+        is Command.Archive -> archive(command)
+        is Command.Unarchive -> unarchive(command)
         is Command.Details -> show(command)
         is Command.Edit -> TODO()
         is Command.EditTags -> TODO()
         is Command.ListAll -> listAll(command)
         is Command.Delete -> delete(command)
         is Command.Search -> TODO()
-        is Command.Unarchive -> TODO()
         Command.Help -> TODO()
         Command.DisplayStats -> TODO()
         Command.Exit -> {
@@ -18,6 +18,20 @@ object CommandExecutor {
         }
 
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
+    }
+
+    private fun archive(command: Command.Archive): CommandResult {
+        return when (repo.archive(command.id)) {
+            true -> CommandResult.Success("Note archived successfully.")
+            false -> CommandResult.Error("Note with this id not found.")
+        }
+    }
+
+    private fun unarchive(command: Command.Unarchive): CommandResult {
+        return when (repo.unarchive(command.id)) {
+            true -> CommandResult.Success("Note unarchived successfully.")
+            false -> CommandResult.Error("Note with this id not found.")
+        }
     }
 
     private fun delete(command: Command.Delete): CommandResult {
@@ -32,7 +46,7 @@ object CommandExecutor {
             }
         }
 
-        return when (repo.deleteById(command.id)) {
+        return when (repo.delete(command.id)) {
             true -> CommandResult.Success("Note deleted successfully.")
             false -> CommandResult.Error("Note with this id not found.")
         }
@@ -64,6 +78,7 @@ object CommandExecutor {
         val notes = repo.getAll().filter { note ->
             (command.tags.isEmpty() || note.tags.any(command.tags::contains))
                     && (command.priority == 0 || note.priority == command.priority)
+                    && !note.archived
         }
 
         val rows = notes.map {
