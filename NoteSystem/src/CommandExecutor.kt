@@ -1,3 +1,5 @@
+private const val NOTE_ID_NOT_FOUND = "Note with this id not found."
+
 object CommandExecutor {
     private val repo = NoteRepo
     fun execute(command: Command): CommandResult = when (command) {
@@ -20,19 +22,15 @@ object CommandExecutor {
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
     }
 
-    private fun archive(command: Command.Archive): CommandResult {
-        return when (repo.archive(command.id)) {
-            true -> CommandResult.Success("Note archived successfully.")
-            false -> CommandResult.Error("Note with this id not found.")
+    private fun archive(command: Command.Archive) =
+        executeAndMapResult("Note archived successfully.") {
+            repo.archive(command.id)
         }
-    }
 
-    private fun unarchive(command: Command.Unarchive): CommandResult {
-        return when (repo.unarchive(command.id)) {
-            true -> CommandResult.Success("Note unarchived successfully.")
-            false -> CommandResult.Error("Note with this id not found.")
+    private fun unarchive(command: Command.Unarchive) =
+        executeAndMapResult("Note unarchived successfully.") {
+            repo.unarchive(command.id)
         }
-    }
 
     private fun delete(command: Command.Delete): CommandResult {
         if (!command.force) {
@@ -40,20 +38,19 @@ object CommandExecutor {
             when (readln().lowercase().trim()) {
                 "y" -> { /* Falls through to the delete block below. */ }
 
-                "n" -> CommandResult.Success("Cancelled.")
+                "n" -> return CommandResult.Success("Cancelled.")
 
-                else -> CommandResult.Error("Answer not recognized.")
+                else -> return CommandResult.Error("Answer not recognized.")
             }
         }
 
-        return when (repo.delete(command.id)) {
-            true -> CommandResult.Success("Note deleted successfully.")
-            false -> CommandResult.Error("Note with this id not found.")
+        return executeAndMapResult("Note deleted successfully.") {
+            repo.delete(command.id)
         }
     }
 
     private fun show(command: Command.Details): CommandResult {
-        val note = repo.getById(command.id) ?: return CommandResult.Error("Note with this id not found.")
+        val note = repo.getById(command.id) ?: return CommandResult.Error(NOTE_ID_NOT_FOUND)
 
         return CommandResult.Success(buildString {
             appendLine("Title: ${note.title}")
@@ -91,5 +88,12 @@ object CommandExecutor {
         }
 
         return CommandResult.Success(TableRenderer.renderTable(headers, rows))
+    }
+
+    private fun executeAndMapResult(successMessage: String, action: () -> Boolean): CommandResult {
+        return when (action()) {
+            true -> CommandResult.Success(successMessage)
+            false -> CommandResult.Error(NOTE_ID_NOT_FOUND)
+        }
     }
 }
