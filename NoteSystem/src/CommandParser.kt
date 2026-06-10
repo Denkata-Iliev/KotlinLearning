@@ -23,32 +23,26 @@ object CommandParser {
 
         val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: delete <id> [--force]. Id must be a number.")
 
-        val result = ParseResult.Success(Command.Delete(id))
-        if (split.size == 2) {
-            println("Are you sure you want to delete this note? y/n")
-
-            val confirmed = when (readln()) {
-                "y" -> true
-                "n" -> false
-                else -> return ParseResult.Error("Answer not recognized. Operation cancelled.")
-            }
-
-            if (confirmed) {
-                return result
-            }
-        }
-
-        if (split[2] != "--force") {
+        // just a note for me:
+        // `val force = split.getOrNull(2) == "--force"`
+        // could also be used, and it skips the 2 `if` checks I have.
+        // Mine tells you if you misspelled something in the flag, the other just skips it.
+        // Doesn't really matter
+        if (split.size == 3 && split[2] != "--force") {
             return ParseResult.Error("Usage: delete <id> [--force]. Id must be a number.")
         }
 
-        return result
+        if (split.size == 3) {
+            return ParseResult.Success(Command.Delete(id, force = true))
+        }
+
+        return ParseResult.Success(Command.Delete(id))
     }
 
     private fun parseShow(trimmedInput: String): ParseResult {
         val split = trimmedInput.split(" ")
         if (split.size != 2) {
-            ParseResult.Error("Usage: show <id>. Id must be a number.")
+            return ParseResult.Error("Usage: show <id>. Id must be a number.")
         }
 
         val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: show <id>. Id must be a number.")

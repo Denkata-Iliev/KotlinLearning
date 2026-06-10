@@ -21,6 +21,17 @@ object CommandExecutor {
     }
 
     private fun delete(command: Command.Delete): CommandResult {
+        if (!command.force) {
+            println("Are you sure you want to delete this note? y/n")
+            when (readln().lowercase().trim()) {
+                "y" -> { /* Falls through to the delete block below. */ }
+
+                "n" -> CommandResult.Success("Cancelled.")
+
+                else -> CommandResult.Error("Answer not recognized.")
+            }
+        }
+
         return when (repo.deleteById(command.id)) {
             true -> CommandResult.Success("Note deleted successfully.")
             false -> CommandResult.Error("Note with this id not found.")
@@ -29,12 +40,12 @@ object CommandExecutor {
 
     private fun show(command: Command.Details): CommandResult {
         val note = repo.getById(command.id) ?: return CommandResult.Error("Note with this id not found.")
-        println("""
-            Title: ${note.title}
-            Tags: ${note.tags.joinToString(", ")}
-            Priority: ${note.priority}
-        """.trimIndent())
-        return CommandResult.Success("")
+
+        return CommandResult.Success(buildString {
+            appendLine("Title: ${note.title}")
+            appendLine("Tags: ${note.tags.joinToString(", ")}")
+            appendLine("Priority: ${note.priority}")
+        })
     }
 
     private fun add(command: Command.Add): CommandResult {
