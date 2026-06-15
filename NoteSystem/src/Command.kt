@@ -15,7 +15,6 @@ sealed class Command {
     data class Archive(val id: Int) : Command()
     data class Unarchive(val id: Int) : Command()
 
-    data object DisplayStats : Command()
     data object Help : Command()
     data object Exit : Command()
     data object Unknown : Command()

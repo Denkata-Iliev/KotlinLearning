@@ -15,6 +15,8 @@ object NoteRepo {
 
     fun unarchive(id: Int) = updateNote(id) { it.copy(archived = false) }
 
+    fun edit(id: Int, title: String) = updateNote(id) { it.copy(title = title) }
+
     private fun updateNote(id: Int, transformNote: (note: Note) -> Note): Boolean {
         val index = notes.indexOfFirst { it.id == id }
             .takeIf { it != -1 } ?: return false

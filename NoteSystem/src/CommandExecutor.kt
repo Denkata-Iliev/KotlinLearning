@@ -7,13 +7,12 @@ object CommandExecutor {
         is Command.Archive -> archive(command)
         is Command.Unarchive -> unarchive(command)
         is Command.Details -> show(command)
-        is Command.Edit -> TODO()
+        is Command.Edit -> edit(command)
         is Command.EditTags -> TODO()
         is Command.ListAll -> listAll(command)
         is Command.Delete -> delete(command)
         is Command.Search -> TODO()
         Command.Help -> TODO()
-        Command.DisplayStats -> TODO()
         Command.Exit -> {
             println("Byee 👋🏻!")
             CommandResult.Exit
@@ -21,6 +20,11 @@ object CommandExecutor {
 
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
     }
+
+    private fun edit(command: Command.Edit) =
+        executeAndMapResult("Note updated successfully.") {
+            repo.edit(command.id, command.title)
+        }
 
     private fun archive(command: Command.Archive) =
         executeAndMapResult("Note archived successfully.") {
