@@ -1,4 +1,5 @@
-private const val TAGS_PRIO_EXPLANATION = "Tags must be separated by a single comma. Priority must be a number."
+private const val TAGS_MUST_BE_SEPARATED_BY_COMMA = "Tags must be separated by a single comma"
+private const val TAGS_PRIO_EXPLANATION = "$TAGS_MUST_BE_SEPARATED_BY_COMMA. Priority must be a number."
 private const val TAGS_PRIO_EXAMPLE = "[--tags=t1,t2] [--priority=10]"
 private const val ID_MUST_BE_NUMBER = "Id must be a number"
 private const val EDIT_USAGE_MESSAGE =
@@ -22,9 +23,26 @@ object CommandParser {
             trimmedInput.startsWith("archive ") -> parseArchive(trimmedInput)
             trimmedInput.startsWith("unarchive ") -> parseUnarchive(trimmedInput)
             trimmedInput.startsWith("edit ") -> parseEdit(trimmedInput)
+            trimmedInput.startsWith("tag ") -> parseEditTags(trimmedInput)
             trimmedInput == "exit" -> ParseResult.Success(Command.Exit)
             else -> ParseResult.Success(Command.Unknown)
         }
+    }
+
+    private fun parseEditTags(trimmedInput: String): ParseResult {
+        val split = trimmedInput.split(SPACE_SPLIT)
+        if (split.size != 3) {
+            return ParseResult.Error("Usage: tag <id> t1,t2... $ID_MUST_BE_NUMBER. $TAGS_MUST_BE_SEPARATED_BY_COMMA.")
+        }
+
+        val id = split[1].toIntOrNull() ?: return ParseResult.Error("$ID_MUST_BE_NUMBER.")
+
+        val tags = split[2].split(COMMA_SPLIT)
+        if (tags.isEmpty()) {
+            return ParseResult.Error("Usage: tag <id> t1,t2... $ID_MUST_BE_NUMBER. $TAGS_MUST_BE_SEPARATED_BY_COMMA.")
+        }
+
+        return ParseResult.Success(Command.EditTags(id, tags))
     }
 
     private fun parseEdit(trimmedInput: String): ParseResult {

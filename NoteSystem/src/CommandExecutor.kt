@@ -8,7 +8,7 @@ object CommandExecutor {
         is Command.Unarchive -> unarchive(command)
         is Command.Details -> show(command)
         is Command.Edit -> edit(command)
-        is Command.EditTags -> TODO()
+        is Command.EditTags -> editTags(command)
         is Command.ListAll -> listAll(command)
         is Command.Delete -> delete(command)
         is Command.Search -> TODO()
@@ -20,6 +20,11 @@ object CommandExecutor {
 
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
     }
+
+    private fun editTags(command: Command.EditTags) =
+        executeAndMapResult("Note tags updated successfully") {
+            repo.editTags(command.id, command.tags)
+        }
 
     private fun edit(command: Command.Edit) =
         executeAndMapResult("Note updated successfully.") {
