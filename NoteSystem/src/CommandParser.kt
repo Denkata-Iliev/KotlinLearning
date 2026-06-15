@@ -18,12 +18,19 @@ object CommandParser {
         return when {
             trimmedInput.startsWith("add ") -> parseAdd(trimmedInput)
             trimmedInput.startsWith("list") -> parseListAll(trimmedInput)
-            trimmedInput.startsWith("show ") -> parseShow(trimmedInput)
             trimmedInput.startsWith("delete ") -> parseDelete(trimmedInput)
-            trimmedInput.startsWith("archive ") -> parseArchive(trimmedInput)
-            trimmedInput.startsWith("unarchive ") -> parseUnarchive(trimmedInput)
             trimmedInput.startsWith("edit ") -> parseEdit(trimmedInput)
             trimmedInput.startsWith("tag ") -> parseEditTags(trimmedInput)
+
+            trimmedInput.startsWith("show ") ->
+                parseIdCommand(trimmedInput, "show", Command::Details)
+
+            trimmedInput.startsWith("archive ") ->
+                parseIdCommand(trimmedInput, "archive", Command::Archive)
+
+            trimmedInput.startsWith("unarchive ") ->
+                parseIdCommand(trimmedInput, "unarchive", Command::Unarchive)
+
             trimmedInput == "exit" -> ParseResult.Success(Command.Exit)
             else -> ParseResult.Success(Command.Unknown)
         }
@@ -62,22 +69,6 @@ object CommandParser {
         return ParseResult.Success(Command.Edit(id, title))
     }
 
-    private fun parseArchive(trimmedInput: String): ParseResult {
-        val split = trimmedInput.split(SPACE_SPLIT)
-
-        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: archive <id>. $ID_MUST_BE_NUMBER.")
-
-        return ParseResult.Success(Command.Archive(id))
-    }
-
-    private fun parseUnarchive(trimmedInput: String): ParseResult {
-        val split = trimmedInput.split(SPACE_SPLIT)
-
-        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: unarchive <id>. $ID_MUST_BE_NUMBER.")
-
-        return ParseResult.Success(Command.Unarchive(id))
-    }
-
     private fun parseDelete(trimmedInput: String): ParseResult {
         val split = trimmedInput.lowercase().split(SPACE_SPLIT)
         if (split.size !in 2..3) {
@@ -100,16 +91,6 @@ object CommandParser {
         }
 
         return ParseResult.Success(Command.Delete(id))
-    }
-
-    private fun parseShow(trimmedInput: String): ParseResult {
-        val split = trimmedInput.split(SPACE_SPLIT)
-        if (split.size != 2) {
-            return ParseResult.Error("Usage: show <id>. $ID_MUST_BE_NUMBER.")
-        }
-
-        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: show <id>. $ID_MUST_BE_NUMBER.")
-        return ParseResult.Success(Command.Details(id))
     }
 
     private fun parseAdd(trimmedInput: String): ParseResult {
@@ -140,6 +121,16 @@ object CommandParser {
         }
 
         return ParseResult.Success(Command.ListAll(tags, priority, archived, all))
+    }
+
+    private fun parseIdCommand(
+        trimmedInput: String,
+        commandName: String,
+        createCommand: (id: Int) -> Command
+    ): ParseResult {
+        val split = trimmedInput.split(SPACE_SPLIT)
+        val id = split[1].toIntOrNull() ?: return ParseResult.Error("Usage: $commandName <id>. $ID_MUST_BE_NUMBER.")
+        return ParseResult.Success(createCommand(id))
     }
 
     private fun parseFlags(input: String): Map<String, String> =
