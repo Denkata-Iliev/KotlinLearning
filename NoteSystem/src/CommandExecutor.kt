@@ -1,3 +1,58 @@
+private const val HELP_MENU = """
+📝 Note CLI - Help
+══════════════════════════════════════════════════════════
+
+Available commands:
+
+  add "title" [--tags=t1,t2] [--priority=N]
+      Create a new note with optional tags and priority.
+      Example: add "Buy groceries" --tags=shopping,personal --priority=3
+
+  list [--tags=t1,t2] [--priority=N] [--archived] [--all]
+      List notes. Optionally filter by tags, priority, or status.
+      Example: list --tags=work --priority=1
+      Example: list --archived
+      Example: list --all
+
+  show <id>
+      Display full details of a note.
+      Example: show 5
+
+  edit <id> "new title"
+      Update the title of an existing note.
+      Example: edit 5 "Updated title"
+
+  tag <id> t1,t2,...
+      Replace tags on a note.
+      ⚠️  This replaces ALL existing tags. It does not append.
+      Example: tag 5 work,urgent
+
+  delete <id> [--force]
+      Delete a note. Asks for confirmation unless --force is used.
+      Example: delete 5
+      Example: delete 5 --force
+
+  search "query"
+      Search notes by title (case-insensitive).
+      Example: search "groceries"
+
+  archive <id>
+      Archive a note. Archived notes are hidden from default list.
+      Example: archive 5
+
+  unarchive <id>
+      Restore an archived note.
+      Example: unarchive 5
+
+  help
+      Show this help message.
+
+  exit
+      Exit the application.
+
+══════════════════════════════════════════════════════════
+"""
+
 private const val NOTE_ID_NOT_FOUND = "Note with this id not found."
 
 object CommandExecutor {
@@ -12,7 +67,7 @@ object CommandExecutor {
         is Command.ListAll -> listAll(command)
         is Command.Delete -> delete(command)
         is Command.Search -> TODO()
-        Command.Help -> TODO()
+        Command.Help -> CommandResult.Success(HELP_MENU)
         Command.Exit -> {
             println("Byee 👋🏻!")
             CommandResult.Exit

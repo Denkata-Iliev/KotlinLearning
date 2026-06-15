@@ -32,6 +32,7 @@ object CommandParser {
                 parseIdCommand(trimmedInput, "unarchive", Command::Unarchive)
 
             trimmedInput == "exit" -> ParseResult.Success(Command.Exit)
+            trimmedInput == "help" -> ParseResult.Success(Command.Help)
             else -> ParseResult.Success(Command.Unknown)
         }
     }
