@@ -1,7 +1,13 @@
 sealed class Command {
     data class Add(val title: String, val tags: List<String> = emptyList(), val priority: Int = 0) : Command()
     data class Delete(val id: Int, val force: Boolean = false) : Command()
-    data class ListAll(val tags: List<String> = emptyList(), val priority: Int = 0) : Command()
+    data class ListAll(
+        val tags: List<String> = emptyList(),
+        val priority: Int = 0,
+        val archived: Boolean = false,
+        val all: Boolean = false
+    ) : Command()
+
     data class Details(val id: Int) : Command()
     data class Edit(val id: Int, val title: String) : Command()
     data class Search(val query: String) : Command()

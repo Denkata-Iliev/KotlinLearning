@@ -85,7 +85,14 @@ object CommandParser {
         val tags = parsedFlags["tags"]?.split(",") ?: emptyList()
         val priority = parsedFlags["priority"]?.toIntOrNull() ?: 0
 
-        return ParseResult.Success(Command.ListAll(tags, priority))
+        val archived = parsedFlags["archived"]?.toBoolean() ?: false
+        val all = parsedFlags["all"]?.toBoolean() ?: false
+
+        if (archived && all) {
+            return ParseResult.Error("You can't combine those flags.")
+        }
+
+        return ParseResult.Success(Command.ListAll(tags, priority, archived, all))
     }
 
     private fun parseFlags(input: String): Map<String, String> =

@@ -71,20 +71,33 @@ object CommandExecutor {
     }
 
     private fun listAll(command: Command.ListAll): CommandResult {
-        val headers = listOf("Id", "Title", "Tags", "Priority")
+        val headers = buildList {
+            add("Id")
+            add("Title")
+            add("Tags")
+            add("Priority")
+            if (command.all) {
+                add("Archived")
+            }
+        }
+
         val notes = repo.getAll().filter { note ->
             (command.tags.isEmpty() || note.tags.any(command.tags::contains))
                     && (command.priority == 0 || note.priority == command.priority)
-                    && !note.archived
+                    && (command.archived == note.archived || command.all)
         }
 
         val rows = notes.map {
-            listOf(
-                it.id.toString(),
-                it.title,
-                it.tags.joinToString(", "),
-                it.priority.toString()
-            )
+            buildList {
+                add(it.id.toString())
+                add(it.title)
+                add(it.tags.joinToString(", "))
+                add(it.priority.toString())
+                if (command.all) {
+                    val v = if (it.archived) "Yes" else "No"
+                    add(v)
+                }
+            }
         }
 
         return CommandResult.Success(TableRenderer.renderTable(headers, rows))
