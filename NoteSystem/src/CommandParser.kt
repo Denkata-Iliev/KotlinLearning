@@ -12,6 +12,7 @@ object CommandParser {
     private val listAllPattern = Regex("""list\s*(.*)""")
     private val flagPattern = Regex("""--(\w+)(?:=(\S+))?""")
     private val editPattern = Regex("""edit\s+(\d+)\s+"([^"]+)"(.*)""")
+    private val searchPattern = Regex("""search\s+"([^"]+)"(.*)""")
 
     fun parseCommand(input: String): ParseResult {
         val trimmedInput = input.trim()
@@ -21,6 +22,7 @@ object CommandParser {
             trimmedInput.startsWith("delete ") -> parseDelete(trimmedInput)
             trimmedInput.startsWith("edit ") -> parseEdit(trimmedInput)
             trimmedInput.startsWith("tag ") -> parseEditTags(trimmedInput)
+            trimmedInput.startsWith("search ") -> parseSearch(trimmedInput)
 
             trimmedInput.startsWith("show ") ->
                 parseIdCommand(trimmedInput, "show", Command::Details)
@@ -35,6 +37,13 @@ object CommandParser {
             trimmedInput == "help" -> ParseResult.Success(Command.Help)
             else -> ParseResult.Success(Command.Unknown)
         }
+    }
+
+    private fun parseSearch(trimmedInput: String): ParseResult {
+        val match = searchPattern.find(trimmedInput) ?: return ParseResult.Error("Usage: search \"query\"")
+        val query = match.groupValues[1]
+
+        return ParseResult.Success(Command.Search(query))
     }
 
     private fun parseEditTags(trimmedInput: String): ParseResult {

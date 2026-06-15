@@ -66,7 +66,7 @@ object CommandExecutor {
         is Command.EditTags -> editTags(command)
         is Command.ListAll -> listAll(command)
         is Command.Delete -> delete(command)
-        is Command.Search -> TODO()
+        is Command.Search -> search(command)
         Command.Help -> CommandResult.Success(HELP_MENU)
         Command.Exit -> {
             println("Byee 👋🏻!")
@@ -74,6 +74,16 @@ object CommandExecutor {
         }
 
         Command.Unknown -> CommandResult.Error("Unknown command. Try again.")
+    }
+
+    private fun search(command: Command.Search): CommandResult {
+        val notes = repo.getAll().filter { it.title.contains(command.query, true) }
+        val headers = buildHeaders(true)
+        val rows = notes.map {
+            it.toRow(true)
+        }
+
+        return CommandResult.Success(TableRenderer.renderTable(headers, rows))
     }
 
     private fun editTags(command: Command.EditTags) =
@@ -135,15 +145,7 @@ object CommandExecutor {
     }
 
     private fun listAll(command: Command.ListAll): CommandResult {
-        val headers = buildList {
-            add("Id")
-            add("Title")
-            add("Tags")
-            add("Priority")
-            if (command.all) {
-                add("Archived")
-            }
-        }
+        val headers = buildHeaders(command.all)
 
         val notes = repo.getAll().filter { note ->
             (command.tags.isEmpty() || note.tags.any(command.tags::contains))
@@ -152,16 +154,7 @@ object CommandExecutor {
         }
 
         val rows = notes.map {
-            buildList {
-                add(it.id.toString())
-                add(it.title)
-                add(it.tags.joinToString(", "))
-                add(it.priority.toString())
-                if (command.all) {
-                    val v = if (it.archived) "Yes" else "No"
-                    add(v)
-                }
-            }
+            it.toRow(command.all)
         }
 
         return CommandResult.Success(TableRenderer.renderTable(headers, rows))
@@ -173,4 +166,15 @@ object CommandExecutor {
             false -> CommandResult.Error(NOTE_ID_NOT_FOUND)
         }
     }
+
+    private fun buildHeaders(includeArchived: Boolean = false) =
+        buildList {
+            add("Id")
+            add("Title")
+            add("Tags")
+            add("Priority")
+            if (includeArchived) {
+                add("Archived")
+            }
+        }
 }
