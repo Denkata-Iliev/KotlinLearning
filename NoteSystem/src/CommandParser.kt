@@ -11,7 +11,7 @@ object CommandParser {
     private val addPattern = Regex("""add\s+"([^"]+)"(.*)""")
     private val listAllPattern = Regex("""list\s*(.*)""")
     private val flagPattern = Regex("""--(\w+)(?:=(\S+))?""")
-    private val editPattern = Regex("""edit\s[1-9]\s"([^"]+)"(.*)""")
+    private val editPattern = Regex("""edit\s+(\d+)\s+"([^"]+)"(.*)""")
 
     fun parseCommand(input: String): ParseResult {
         val trimmedInput = input.trim()
@@ -55,9 +55,9 @@ object CommandParser {
         }
 
         val match = editPattern.find(trimmedInput) ?: return ParseResult.Error(EDIT_USAGE_MESSAGE)
-        val id = split[1].toIntOrNull() ?: return ParseResult.Error("$ID_MUST_BE_NUMBER.")
+        val id = match.groupValues[1].toIntOrNull() ?: return ParseResult.Error("$ID_MUST_BE_NUMBER.")
 
-        val title = match.groupValues[1]
+        val title = match.groupValues[2]
 
         return ParseResult.Success(Command.Edit(id, title))
     }
