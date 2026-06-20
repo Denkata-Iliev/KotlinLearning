@@ -3,7 +3,7 @@ package org.example.dsl
 import org.example.data.Quiz
 
 class QuizBuilder(private val name: String) {
-    var description: String = ""
+    var description = ""
     var passingScorePercent = 50
 
     fun build(): Quiz {
