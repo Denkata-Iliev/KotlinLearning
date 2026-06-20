@@ -8,6 +8,7 @@ class QuizBuilderTests {
     fun `quiz has correct name`() {
         val q = quiz("some name") {
             description = "my description"
+            passingScorePercent = 50
         }
         assertEquals("some name", q.title)
     }
@@ -16,6 +17,7 @@ class QuizBuilderTests {
     fun `quiz has correct description`() {
         val q = quiz("some name") {
             description = "some description"
+            passingScorePercent = 50
         }
 
         assertEquals("some description", q.description)
@@ -65,4 +67,6 @@ class QuizBuilderTests {
             }
         }
     }
+
+    // Building a quiz with questions
 }

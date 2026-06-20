@@ -1,8 +1,10 @@
 package org.example.dsl
 
+import org.example.data.Question
 import org.example.data.Quiz
 
 class QuizBuilder(private val name: String) {
+    private val questions = mutableListOf<Question>()
     var description = ""
     var passingScorePercent = 0
 
@@ -18,10 +20,15 @@ class QuizBuilder(private val name: String) {
             questions = emptyList()
         )
     }
+
+    fun question(question: String, init: QuestionBuilder.() -> Unit) {
+        questions += QuestionBuilder(question).apply(init).build()
+        // Only leaving this here as reference for alternative way
+        // val builder = QuestionBuilder(question)
+        // builder.init()
+        // questions.add(builder.build())
+    }
 }
 
-fun quiz(name: String, init: QuizBuilder.() -> Unit): Quiz {
-    val quiz = QuizBuilder(name)
-    quiz.init()
-    return quiz.build()
-}
+fun quiz(name: String, init: QuizBuilder.() -> Unit) = QuizBuilder(name).apply(init).build()
+// This is equivalent to the three lines in the question func or the test helper in the QuestionBuilderTests class

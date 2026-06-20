@@ -1,9 +1,18 @@
-import org.example.dsl.question
+import org.example.data.Question
+import org.example.dsl.QuestionBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class QuestionBuilderTests {
+
+    // Only a test helper so I can test question building in isolation.
+    private fun question(question: String, init: QuestionBuilder.() -> Unit): Question {
+        val questionBuilder = QuestionBuilder(question)
+        questionBuilder.init()
+        return questionBuilder.build()
+    }
+
     @Test
     fun `question has correct title`() {
         val q = question("What is Int") {

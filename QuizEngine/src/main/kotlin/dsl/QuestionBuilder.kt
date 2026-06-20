@@ -28,9 +28,3 @@ class QuestionBuilder(private val question: String) {
         options.add(Option(answer, correct))
     }
 }
-
-fun question(question: String, init: QuestionBuilder.() -> Unit): Question {
-    val questionBuilder = QuestionBuilder(question)
-    questionBuilder.init()
-    return questionBuilder.build()
-}
