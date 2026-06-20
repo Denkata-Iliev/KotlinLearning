@@ -13,7 +13,7 @@ class QuizBuilderTests {
     }
 
     @Test
-    fun `quiz has description`() {
+    fun `quiz has correct description`() {
         val q = quiz("some name") {
             description = "some description"
         }
@@ -31,6 +31,7 @@ class QuizBuilderTests {
         assertEquals(60, q.passingScorePercent)
     }
 
+    // Could also verify err message, but this is enough now
     @Test
     fun `empty quiz title throws`() {
         assertFailsWith<IllegalArgumentException> {

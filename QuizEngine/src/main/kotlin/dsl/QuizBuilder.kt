@@ -4,7 +4,7 @@ import org.example.data.Quiz
 
 class QuizBuilder(private val name: String) {
     var description = ""
-    var passingScorePercent = 50
+    var passingScorePercent = 0
 
     fun build(): Quiz {
         require(name.isNotBlank()) { "name must not be blank" }
