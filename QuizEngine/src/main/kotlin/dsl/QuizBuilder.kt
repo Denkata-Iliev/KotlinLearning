@@ -12,12 +12,13 @@ class QuizBuilder(private val name: String) {
         require(name.isNotBlank()) { "name must not be blank" }
         require(description.isNotBlank()) { "description must not be blank" }
         require(passingScorePercent > 0) { "passingScorePercent must be greater than zero" }
+        require(questions.size >= 3) { "a quiz must contain at least 3 questions" }
 
         return Quiz(
             title = name,
             description = description,
             passingScorePercent = passingScorePercent,
-            questions = emptyList()
+            questions = questions
         )
     }
 

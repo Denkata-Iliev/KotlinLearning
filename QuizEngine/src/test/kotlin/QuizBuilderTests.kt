@@ -69,4 +69,38 @@ class QuizBuilderTests {
     }
 
     // Building a quiz with questions
+    @Test
+    fun `quiz has valid props and valid questions`() {
+        val q = quiz("some name") {
+            description = "my description"
+            passingScorePercent = 50
+
+            question("what is this?") {
+                points = 2
+
+                option("answer 1", correct = true)
+                option("answer 2")
+                option("answer 3")
+
+                explanation = "i dont know"
+            }
+        }
+
+        assertEquals(1, q.questions.size)
+        assertEquals(2, q.questions[0].points)
+        assertEquals("i dont know", q.questions[0].explanation)
+        assertEquals(true, q.questions[0].options[0].correct)
+        assertEquals(false, q.questions[0].options[1].correct)
+        assertEquals(false, q.questions[0].options[2].correct)
+    }
+
+    @Test
+    fun `quiz with no questions throws`() {
+        assertFailsWith<IllegalArgumentException> {
+            quiz("some name") {
+                description = "my description"
+                passingScorePercent = 50
+            }
+        }
+    }
 }
