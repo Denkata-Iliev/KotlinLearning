@@ -5,4 +5,6 @@ data class Quiz(
     val description: String,
     val passingScorePercent: Int,
     val questions: List<Question>,
-)
+) {
+    val totalPoints: Int get() = questions.sumOf { it.points }
+}

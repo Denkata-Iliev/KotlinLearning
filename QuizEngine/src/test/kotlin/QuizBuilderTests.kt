@@ -5,32 +5,34 @@ import kotlin.test.assertFailsWith
 
 class QuizBuilderTests {
     @Test
-    fun `quiz has correct name`() {
+    fun `quiz has correct name, description, passingPercent and totalPoints`() {
         val q = quiz("some name") {
             description = "my description"
             passingScorePercent = 50
+
+            question("question") {
+                explanation = "asd"
+                points = 2
+                option("a", correct = true)
+                option("b")
+            }
+            question("question") {
+                explanation = "asd"
+                points = 2
+                option("a", correct = true)
+                option("b")
+            }
+            question("question") {
+                explanation = "asd"
+                points = 2
+                option("a", correct = true)
+                option("b")
+            }
         }
         assertEquals("some name", q.title)
-    }
-
-    @Test
-    fun `quiz has correct description`() {
-        val q = quiz("some name") {
-            description = "some description"
-            passingScorePercent = 50
-        }
-
-        assertEquals("some description", q.description)
-    }
-
-    @Test
-    fun `quiz has correct passingScorePercent`() {
-        val q = quiz("some name") {
-            description = "some description"
-            passingScorePercent = 60
-        }
-
-        assertEquals(60, q.passingScorePercent)
+        assertEquals("my description", q.description)
+        assertEquals(50, q.passingScorePercent)
+        assertEquals(6, q.totalPoints)
     }
 
     // Could also verify err message, but this is enough now
@@ -84,9 +86,30 @@ class QuizBuilderTests {
 
                 explanation = "i dont know"
             }
+
+            question("is this a question?") {
+                points = 3
+
+                option("answer 1", correct = true)
+                option("answer 2")
+                option("answer 3")
+
+                explanation = "i dont know"
+            }
+
+            question("is this question number 3?") {
+                points = 5
+
+                option("answer 1", correct = true)
+                option("answer 2")
+                option("answer 3")
+
+                explanation = "i dont know"
+            }
         }
 
-        assertEquals(1, q.questions.size)
+        assertEquals(10, q.totalPoints)
+        assertEquals(3, q.questions.size)
         assertEquals(2, q.questions[0].points)
         assertEquals("i dont know", q.questions[0].explanation)
         assertEquals(true, q.questions[0].options[0].correct)
