@@ -3,6 +3,7 @@ package org.example.dsl
 import org.example.data.Question
 import org.example.data.Quiz
 
+@QuizDslMarker
 class QuizBuilder(private val name: String) {
     private val questions = mutableListOf<Question>()
     var description = ""

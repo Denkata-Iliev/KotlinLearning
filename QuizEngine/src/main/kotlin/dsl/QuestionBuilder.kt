@@ -3,6 +3,7 @@ package org.example.dsl
 import org.example.data.Option
 import org.example.data.Question
 
+@QuizDslMarker
 class QuestionBuilder(private val question: String) {
     private val options = mutableListOf<Option>()
     var explanation = ""
