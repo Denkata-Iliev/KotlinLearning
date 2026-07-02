@@ -1,7 +1,12 @@
 package org.example
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.example.data.Question
 import org.example.data.Quiz
+import kotlin.time.Duration.Companion.seconds
 
 class QuizRunner(private val quiz: Quiz) {
     fun run() {
@@ -37,7 +42,19 @@ class QuizRunner(private val quiz: Quiz) {
                 print("Your answer (1-$maxOption): ")
             }
 
-            val parsed = readln()
+            val input = if (question.timerSeconds != null) {
+                runBlocking {
+                    withTimeoutOrNull(question.timerSeconds.seconds) {
+                        withContext(Dispatchers.IO) {
+                            readln()
+                        }
+                    }
+                } ?: return emptyList()
+            } else {
+                readln()
+            }
+
+            val parsed = input
                 .split(",")
                 .mapNotNull { it.trim().toIntOrNull() }
                 .filter { it in 1..maxOption }

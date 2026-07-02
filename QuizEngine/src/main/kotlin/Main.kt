@@ -10,6 +10,7 @@ fun main() {
         question("What is the Kotlin equivalent of 'switch'?") {
             explanation = "'when' can be used as both statement and expression"
             points = 15
+            timerSeconds = 5
 
             option("when", correct = true)
             option("match")

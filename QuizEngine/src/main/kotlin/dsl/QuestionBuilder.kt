@@ -8,6 +8,7 @@ class QuestionBuilder(private val question: String) {
     private val options = mutableListOf<Option>()
     var explanation = ""
     var points = 0
+    var timerSeconds: Int? = null
 
     fun build(): Question {
         require(question.isNotBlank()) { "question must not be blank" }
@@ -21,7 +22,8 @@ class QuestionBuilder(private val question: String) {
             question = question,
             explanation = explanation,
             options = options,
-            points = points
+            points = points,
+            timerSeconds = timerSeconds
         )
     }
 
